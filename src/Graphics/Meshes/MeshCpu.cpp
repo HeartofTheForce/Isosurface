@@ -1,0 +1,51 @@
+#include <Graphics/Meshes/MeshCpu.h>
+
+namespace
+{
+    template <typename T>
+    void LoadBuffer(MeshGpu &meshGpu, int vboIndex, const T *data)
+    {
+        meshGpu.LoadBuffer(vboIndex, data, sizeof(T));
+    }
+} // namespace
+
+void MeshCpu::CalculateNormals()
+{
+    Normals = std::unique_ptr<glm::vec3[]>(new glm::vec3[VertexCount]);
+#pragma omp parallel for schedule(static, 32)
+    for (int i = 0; i < VertexCount; i += 3)
+    {
+        glm::vec3 u = Vertices[i + 1] - Vertices[i + 0];
+        glm::vec3 v = Vertices[i + 2] - Vertices[i + 0];
+
+        glm::vec3 normal = glm::normalize(glm::cross(v, u));
+
+        Normals[i + 0] = normal;
+        Normals[i + 1] = normal;
+        Normals[i + 2] = normal;
+    }
+}
+
+const int MeshCpu::VboCount = 4;
+const int MeshCpu::VertexVboIndex = 0;
+const int MeshCpu::NormalVboIndex = 1;
+const int MeshCpu::TexCoordVboIndex = 2;
+const int MeshCpu::ColorVboIndex = 3;
+
+void MeshCpu::LoadGpu(MeshGpu &meshGpu)
+{
+    assert(Vertices != nullptr);
+    assert(meshGpu.VboCount == 0);
+    assert(meshGpu.VboIds == nullptr);
+    assert(meshGpu.VboStrides == nullptr);
+
+    meshGpu.VboCount = VboCount;
+    meshGpu.VertexCount = VertexCount;
+    meshGpu.VboIds = std::unique_ptr<GLuint[]>(new GLuint[meshGpu.VboCount]);
+    meshGpu.VboStrides = std::unique_ptr<GLuint[]>(new GLuint[meshGpu.VboCount]);
+
+    LoadBuffer(meshGpu, VertexVboIndex, Vertices.get());
+    LoadBuffer(meshGpu, NormalVboIndex, Normals.get());
+    LoadBuffer(meshGpu, TexCoordVboIndex, TexCoords.get());
+    LoadBuffer(meshGpu, ColorVboIndex, Colors.get());
+}
