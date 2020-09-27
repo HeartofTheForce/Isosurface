@@ -186,7 +186,7 @@ void MeshGenerator::CalculateEdgeX(const int &x, const int &y, const int &z, con
     int indexOffset;
 #pragma omp atomic capture
     indexOffset = _counter++;
-    _edgeMapX.Edges[index] = {VertexInterp(0, p0, p1, d0, d1), NonZeroSign(d1), indexOffset * 6};
+    _edgeMapX.Edges[index] = Edge(VertexInterp(0, p0, p1, d0, d1), NonZeroSign(d1), indexOffset * 6);
 }
 
 void MeshGenerator::CalculateEdgeY(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0)
