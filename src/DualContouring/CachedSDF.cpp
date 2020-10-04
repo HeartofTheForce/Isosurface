@@ -1,5 +1,4 @@
 #include <DualContouring/CachedSDF.h>
-#include <DualContouring/Coordinate.h>
 
 void CachedSDF::Measure(const glm::mat4 &localToWorld, const SDF &f)
 {
@@ -22,12 +21,4 @@ void CachedSDF::Measure(const glm::mat4 &localToWorld, const SDF &f)
             }
         }
     }
-}
-
-void CachedSDF::Get(const int &x, const int &y, const int &z, float &distance, glm::vec3 &position) const
-{
-    int index = Coordinate::To1D(x, y, z, SizeX, SizeY);
-
-    distance = CachedDistances[index];
-    position = CachedPositions[index];
 }

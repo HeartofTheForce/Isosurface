@@ -23,15 +23,15 @@ class MeshGenerator
     int _counter{0};
 
     MeshCpu BuildMesh(const int &totalVertices);
-    void PopulateMesh(const int &index, MeshCpu &meshCpu);
-    void CalculateEdge(int index);
-    void CalculateEdgeX(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0);
-    void CalculateEdgeY(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0);
-    void CalculateEdgeZ(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0);
-    void CalculateVertex(int index);
-    void AggregateEdgeX(const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt);
-    void AggregateEdgeY(const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt);
-    void AggregateEdgeZ(const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt);
+    inline void PopulateMesh(const int &index, MeshCpu &meshCpu);
+    inline void CalculateEdge(int index);
+    inline void CalculateEdgeX(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0);
+    inline void CalculateEdgeY(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0);
+    inline void CalculateEdgeZ(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0);
+    inline void CalculateVertex(int index);
+    inline void AggregateEdgeX(const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt);
+    inline void AggregateEdgeY(const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt);
+    inline void AggregateEdgeZ(const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt);
 
 public:
     MeshCpu GenerateMesh();

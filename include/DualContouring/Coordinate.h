@@ -2,12 +2,21 @@
 
 namespace Coordinate
 {
-    void To3D(
+    inline void To3D(
         int idx,
         const int &sizeX, const int &sizeY,
-        int &x, int &y, int &z);
+        int &x, int &y, int &z)
+    {
+        z = idx / (sizeX * sizeY);
+        idx -= z * sizeX * sizeY;
+        y = idx / sizeX;
+        x = idx % sizeX;
+    }
 
-    int To1D(
+    inline int To1D(
         const int &x, const int &y, const int &z,
-        const int &sizeX, const int &sizeY);
+        const int &sizeX, const int &sizeY)
+    {
+        return (z * sizeX * sizeY) + (y * sizeX) + x;
+    }
 } // namespace Coordinate
