@@ -25,7 +25,7 @@ include_directories(SYSTEM
 )
 include_directories(include)
 
-add_compile_definitions(GLM_FORCE_LEFT_HANDED)
+add_compile_definitions(GLM_FORCE_LEFT_HANDED GLM_FORCE_XYZW_ONLY)
 
 file(GLOB_RECURSE sources
     src/*.cpp

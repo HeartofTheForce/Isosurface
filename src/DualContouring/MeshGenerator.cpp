@@ -45,78 +45,81 @@ void MeshGenerator::PopulateMesh(const int &index, MeshCpu &meshCpu)
     int x, y, z;
     Coordinate::To3D(index, _sizeX, _sizeY, x, y, z);
 
-    Edge &edgeX = _edgeMapX.Get(x, y, z);
-    if (edgeX.IndexOffset != -1)
+    int iX = Coordinate::To1D(x, y, z, _edgeMapX.SizeX, _edgeMapX.SizeY);
+    int oX = _edgeMapX.IndexOffset[iX];
+    if (oX != -1)
     {
-        if (edgeX.Direction == 1)
+        if (_edgeMapX.Direction[iX] == 1)
         {
-            meshCpu.Vertices[edgeX.IndexOffset + 0] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeX.IndexOffset + 1] = _cubeVertices[Coordinate::To1D(x, y - 1, z - 1, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeX.IndexOffset + 2] = _cubeVertices[Coordinate::To1D(x, y - 1, z, _sizeX, _sizeY)]; // unique
+            meshCpu.Vertices[oX + 0] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
+            meshCpu.Vertices[oX + 1] = _cubeVertices[Coordinate::To1D(x, y - 1, z - 1, _sizeX, _sizeY)];
+            meshCpu.Vertices[oX + 2] = _cubeVertices[Coordinate::To1D(x, y - 1, z, _sizeX, _sizeY)]; // unique
 
-            meshCpu.Vertices[edgeX.IndexOffset + 3] = _cubeVertices[Coordinate::To1D(x, y - 1, z - 1, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeX.IndexOffset + 4] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeX.IndexOffset + 5] = _cubeVertices[Coordinate::To1D(x, y, z - 1, _sizeX, _sizeY)]; // unique
+            meshCpu.Vertices[oX + 3] = _cubeVertices[Coordinate::To1D(x, y - 1, z - 1, _sizeX, _sizeY)];
+            meshCpu.Vertices[oX + 4] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
+            meshCpu.Vertices[oX + 5] = _cubeVertices[Coordinate::To1D(x, y, z - 1, _sizeX, _sizeY)]; // unique
         }
         else
         {
-            meshCpu.Vertices[edgeX.IndexOffset + 5] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeX.IndexOffset + 4] = _cubeVertices[Coordinate::To1D(x, y - 1, z - 1, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeX.IndexOffset + 3] = _cubeVertices[Coordinate::To1D(x, y - 1, z, _sizeX, _sizeY)]; // unique
+            meshCpu.Vertices[oX + 5] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
+            meshCpu.Vertices[oX + 4] = _cubeVertices[Coordinate::To1D(x, y - 1, z - 1, _sizeX, _sizeY)];
+            meshCpu.Vertices[oX + 3] = _cubeVertices[Coordinate::To1D(x, y - 1, z, _sizeX, _sizeY)]; // unique
 
-            meshCpu.Vertices[edgeX.IndexOffset + 2] = _cubeVertices[Coordinate::To1D(x, y - 1, z - 1, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeX.IndexOffset + 1] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeX.IndexOffset + 0] = _cubeVertices[Coordinate::To1D(x, y, z - 1, _sizeX, _sizeY)]; // unique
+            meshCpu.Vertices[oX + 2] = _cubeVertices[Coordinate::To1D(x, y - 1, z - 1, _sizeX, _sizeY)];
+            meshCpu.Vertices[oX + 1] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
+            meshCpu.Vertices[oX + 0] = _cubeVertices[Coordinate::To1D(x, y, z - 1, _sizeX, _sizeY)]; // unique
         }
     }
 
-    Edge &edgeY = _edgeMapY.Get(x, y, z);
-    if (edgeY.IndexOffset != -1)
+    int iY = Coordinate::To1D(x, y, z, _edgeMapY.SizeX, _edgeMapY.SizeY);
+    int oY = _edgeMapY.IndexOffset[iY];
+    if (oY != -1)
     {
-        if (edgeY.Direction == 1)
+        if (_edgeMapY.Direction[iY] == 1)
         {
-            meshCpu.Vertices[edgeY.IndexOffset + 0] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeY.IndexOffset + 1] = _cubeVertices[Coordinate::To1D(x - 1, y, z - 1, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeY.IndexOffset + 2] = _cubeVertices[Coordinate::To1D(x, y, z - 1, _sizeX, _sizeY)]; // unique
+            meshCpu.Vertices[oY + 0] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
+            meshCpu.Vertices[oY + 1] = _cubeVertices[Coordinate::To1D(x - 1, y, z - 1, _sizeX, _sizeY)];
+            meshCpu.Vertices[oY + 2] = _cubeVertices[Coordinate::To1D(x, y, z - 1, _sizeX, _sizeY)]; // unique
 
-            meshCpu.Vertices[edgeY.IndexOffset + 3] = _cubeVertices[Coordinate::To1D(x - 1, y, z - 1, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeY.IndexOffset + 4] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeY.IndexOffset + 5] = _cubeVertices[Coordinate::To1D(x - 1, y, z, _sizeX, _sizeY)]; // unique
+            meshCpu.Vertices[oY + 3] = _cubeVertices[Coordinate::To1D(x - 1, y, z - 1, _sizeX, _sizeY)];
+            meshCpu.Vertices[oY + 4] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
+            meshCpu.Vertices[oY + 5] = _cubeVertices[Coordinate::To1D(x - 1, y, z, _sizeX, _sizeY)]; // unique
         }
         else
         {
-            meshCpu.Vertices[edgeY.IndexOffset + 5] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeY.IndexOffset + 4] = _cubeVertices[Coordinate::To1D(x - 1, y, z - 1, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeY.IndexOffset + 3] = _cubeVertices[Coordinate::To1D(x, y, z - 1, _sizeX, _sizeY)]; // unique
+            meshCpu.Vertices[oY + 5] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
+            meshCpu.Vertices[oY + 4] = _cubeVertices[Coordinate::To1D(x - 1, y, z - 1, _sizeX, _sizeY)];
+            meshCpu.Vertices[oY + 3] = _cubeVertices[Coordinate::To1D(x, y, z - 1, _sizeX, _sizeY)]; // unique
 
-            meshCpu.Vertices[edgeY.IndexOffset + 2] = _cubeVertices[Coordinate::To1D(x - 1, y, z - 1, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeY.IndexOffset + 1] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeY.IndexOffset + 0] = _cubeVertices[Coordinate::To1D(x - 1, y, z, _sizeX, _sizeY)]; // unique
+            meshCpu.Vertices[oY + 2] = _cubeVertices[Coordinate::To1D(x - 1, y, z - 1, _sizeX, _sizeY)];
+            meshCpu.Vertices[oY + 1] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
+            meshCpu.Vertices[oY + 0] = _cubeVertices[Coordinate::To1D(x - 1, y, z, _sizeX, _sizeY)]; // unique
         }
     }
 
-    Edge &edgeZ = _edgeMapZ.Get(x, y, z);
-    if (edgeZ.IndexOffset != -1)
+    int iZ = Coordinate::To1D(x, y, z, _edgeMapZ.SizeX, _edgeMapZ.SizeY);
+    int oZ = _edgeMapZ.IndexOffset[iZ];
+    if (oZ != -1)
     {
-        if (edgeZ.Direction == 1)
+        if (_edgeMapZ.Direction[iZ] == 1)
         {
-            meshCpu.Vertices[edgeZ.IndexOffset + 0] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeZ.IndexOffset + 1] = _cubeVertices[Coordinate::To1D(x - 1, y - 1, z, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeZ.IndexOffset + 2] = _cubeVertices[Coordinate::To1D(x - 1, y, z, _sizeX, _sizeY)]; // unique
+            meshCpu.Vertices[oZ + 0] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
+            meshCpu.Vertices[oZ + 1] = _cubeVertices[Coordinate::To1D(x - 1, y - 1, z, _sizeX, _sizeY)];
+            meshCpu.Vertices[oZ + 2] = _cubeVertices[Coordinate::To1D(x - 1, y, z, _sizeX, _sizeY)]; // unique
 
-            meshCpu.Vertices[edgeZ.IndexOffset + 3] = _cubeVertices[Coordinate::To1D(x - 1, y - 1, z, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeZ.IndexOffset + 4] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeZ.IndexOffset + 5] = _cubeVertices[Coordinate::To1D(x, y - 1, z, _sizeX, _sizeY)]; // unique
+            meshCpu.Vertices[oZ + 3] = _cubeVertices[Coordinate::To1D(x - 1, y - 1, z, _sizeX, _sizeY)];
+            meshCpu.Vertices[oZ + 4] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
+            meshCpu.Vertices[oZ + 5] = _cubeVertices[Coordinate::To1D(x, y - 1, z, _sizeX, _sizeY)]; // unique
         }
         else
         {
-            meshCpu.Vertices[edgeZ.IndexOffset + 5] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeZ.IndexOffset + 4] = _cubeVertices[Coordinate::To1D(x - 1, y - 1, z, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeZ.IndexOffset + 3] = _cubeVertices[Coordinate::To1D(x - 1, y, z, _sizeX, _sizeY)]; // unique
+            meshCpu.Vertices[oZ + 5] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
+            meshCpu.Vertices[oZ + 4] = _cubeVertices[Coordinate::To1D(x - 1, y - 1, z, _sizeX, _sizeY)];
+            meshCpu.Vertices[oZ + 3] = _cubeVertices[Coordinate::To1D(x - 1, y, z, _sizeX, _sizeY)]; // unique
 
-            meshCpu.Vertices[edgeZ.IndexOffset + 2] = _cubeVertices[Coordinate::To1D(x - 1, y - 1, z, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeZ.IndexOffset + 1] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
-            meshCpu.Vertices[edgeZ.IndexOffset + 0] = _cubeVertices[Coordinate::To1D(x, y - 1, z, _sizeX, _sizeY)]; // unique
+            meshCpu.Vertices[oZ + 2] = _cubeVertices[Coordinate::To1D(x - 1, y - 1, z, _sizeX, _sizeY)];
+            meshCpu.Vertices[oZ + 1] = _cubeVertices[Coordinate::To1D(x, y, z, _sizeX, _sizeY)];
+            meshCpu.Vertices[oZ + 0] = _cubeVertices[Coordinate::To1D(x, y - 1, z, _sizeX, _sizeY)]; // unique
         }
     }
 }
@@ -124,6 +127,9 @@ void MeshGenerator::PopulateMesh(const int &index, MeshCpu &meshCpu)
 MeshCpu MeshGenerator::GenerateMesh()
 {
     std::fill(_cubeCheck.get(), _cubeCheck.get() + _totalSize, false);
+    std::fill(_edgeMapX.IndexOffset.get(), _edgeMapX.IndexOffset.get() + _edgeMapX.TotalSize, -1);
+    std::fill(_edgeMapY.IndexOffset.get(), _edgeMapY.IndexOffset.get() + _edgeMapY.TotalSize, -1);
+    std::fill(_edgeMapZ.IndexOffset.get(), _edgeMapZ.IndexOffset.get() + _edgeMapZ.TotalSize, -1);
 
     _counter = 0;
 #pragma omp parallel
@@ -158,25 +164,18 @@ void MeshGenerator::CalculateEdge(int index)
 
 void MeshGenerator::CalculateEdgeX(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0)
 {
-    if (x >= _sizeX)
-        return;
-
-    int index = Coordinate::To1D(x, y, z, _edgeMapX.SizeX, _edgeMapX.SizeY);
-    if (y <= 0 || z <= 0 ||
+    if (x >= _sizeX ||
+        y <= 0 || z <= 0 ||
         y >= _sizeY || z >= _sizeZ)
-    {
-        _edgeMapX.Edges[index] = {};
         return;
-    }
 
     float d1;
     glm::vec3 p1;
     _cachedSDF->Get(x + 1, y, z, d1, p1);
     if (NonZeroSign(d0) == NonZeroSign(d1))
-    {
-        _edgeMapX.Edges[index] = {};
         return;
-    }
+
+    int index = Coordinate::To1D(x, y, z, _edgeMapX.SizeX, _edgeMapX.SizeY);
 
     _cubeCheck[Coordinate::To1D(x, y, z, _sizeX, _sizeY)] = true;
     _cubeCheck[Coordinate::To1D(x, y - 1, z, _sizeX, _sizeY)] = true;
@@ -186,30 +185,26 @@ void MeshGenerator::CalculateEdgeX(const int &x, const int &y, const int &z, con
     int indexOffset;
 #pragma omp atomic capture
     indexOffset = _counter++;
-    _edgeMapX.Edges[index] = Edge(VertexInterp(0, p0, p1, d0, d1), NonZeroSign(d1), indexOffset * 6);
+
+    _edgeMapX.Intersection[index] = VertexInterp(0, p0, p1, d0, d1);
+    _edgeMapX.Direction[index] = NonZeroSign(d1);
+    _edgeMapX.IndexOffset[index] = indexOffset * 6;
 }
 
 void MeshGenerator::CalculateEdgeY(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0)
 {
-    if (y >= _sizeY)
-        return;
-
-    int index = Coordinate::To1D(x, y, z, _edgeMapY.SizeX, _edgeMapY.SizeY);
-    if (x <= 0 || z <= 0 ||
+    if (y >= _sizeY ||
+        x <= 0 || z <= 0 ||
         x >= _sizeX || z >= _sizeZ)
-    {
-        _edgeMapY.Edges[index] = {};
         return;
-    }
 
     float d1;
     glm::vec3 p1;
     _cachedSDF->Get(x, y + 1, z, d1, p1);
     if (NonZeroSign(d0) == NonZeroSign(d1))
-    {
-        _edgeMapY.Edges[index] = {};
         return;
-    }
+
+    int index = Coordinate::To1D(x, y, z, _edgeMapY.SizeX, _edgeMapY.SizeY);
 
     _cubeCheck[Coordinate::To1D(x, y, z, _sizeX, _sizeY)] = true;
     _cubeCheck[Coordinate::To1D(x - 1, y, z, _sizeX, _sizeY)] = true;
@@ -219,30 +214,26 @@ void MeshGenerator::CalculateEdgeY(const int &x, const int &y, const int &z, con
     int indexOffset;
 #pragma omp atomic capture
     indexOffset = _counter++;
-    _edgeMapY.Edges[index] = Edge(VertexInterp(0, p0, p1, d0, d1), NonZeroSign(d1), indexOffset * 6);
+
+    _edgeMapY.Intersection[index] = VertexInterp(0, p0, p1, d0, d1);
+    _edgeMapY.Direction[index] = NonZeroSign(d1);
+    _edgeMapY.IndexOffset[index] = indexOffset * 6;
 }
 
 void MeshGenerator::CalculateEdgeZ(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0)
 {
-    if (z >= _sizeZ)
-        return;
-
-    int index = Coordinate::To1D(x, y, z, _edgeMapZ.SizeX, _edgeMapZ.SizeY);
-    if (x <= 0 || y <= 0 ||
+    if (z >= _sizeZ ||
+        x <= 0 || y <= 0 ||
         x >= _sizeX || y >= _sizeY)
-    {
-        _edgeMapZ.Edges[index] = {};
         return;
-    }
 
     float d1;
     glm::vec3 p1;
     _cachedSDF->Get(x, y, z + 1, d1, p1);
     if (NonZeroSign(d0) == NonZeroSign(d1))
-    {
-        _edgeMapZ.Edges[index] = {};
         return;
-    }
+
+    int index = Coordinate::To1D(x, y, z, _edgeMapZ.SizeX, _edgeMapZ.SizeY);
 
     _cubeCheck[Coordinate::To1D(x, y, z, _sizeX, _sizeY)] = true;
     _cubeCheck[Coordinate::To1D(x - 1, y, z, _sizeX, _sizeY)] = true;
@@ -252,7 +243,10 @@ void MeshGenerator::CalculateEdgeZ(const int &x, const int &y, const int &z, con
     int indexOffset;
 #pragma omp atomic capture
     indexOffset = _counter++;
-    _edgeMapZ.Edges[index] = Edge(VertexInterp(0, p0, p1, d0, d1), NonZeroSign(d1), indexOffset * 6);
+
+    _edgeMapZ.Intersection[index] = VertexInterp(0, p0, p1, d0, d1);
+    _edgeMapZ.Direction[index] = NonZeroSign(d1);
+    _edgeMapZ.IndexOffset[index] = indexOffset * 6;
 }
 
 void MeshGenerator::CalculateVertex(int index)
@@ -285,33 +279,30 @@ void MeshGenerator::CalculateVertex(int index)
 
 void MeshGenerator::AggregateEdgeX(const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt)
 {
-    int edgeIndex = Coordinate::To1D(x, y, z, _edgeMapX.SizeX, _edgeMapX.SizeY);
-    Edge &currentEdge = _edgeMapX.Edges[edgeIndex];
-    if (currentEdge.IndexOffset != -1)
+    int iX = Coordinate::To1D(x, y, z, _edgeMapX.SizeX, _edgeMapX.SizeY);
+    if (_edgeMapX.IndexOffset[iX] != -1)
     {
-        sum += currentEdge.Intersection;
+        sum += _edgeMapX.Intersection[iX];
         cnt++;
     }
 }
 
 void MeshGenerator::AggregateEdgeY(const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt)
 {
-    int edgeIndex = Coordinate::To1D(x, y, z, _edgeMapY.SizeX, _edgeMapY.SizeY);
-    Edge &currentEdge = _edgeMapY.Edges[edgeIndex];
-    if (currentEdge.IndexOffset != -1)
+    int iY = Coordinate::To1D(x, y, z, _edgeMapY.SizeX, _edgeMapY.SizeY);
+    if (_edgeMapY.IndexOffset[iY] != -1)
     {
-        sum += currentEdge.Intersection;
+        sum += _edgeMapY.Intersection[iY];
         cnt++;
     }
 }
 
 void MeshGenerator::AggregateEdgeZ(const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt)
 {
-    int edgeIndex = Coordinate::To1D(x, y, z, _edgeMapZ.SizeX, _edgeMapZ.SizeY);
-    Edge &currentEdge = _edgeMapZ.Edges[edgeIndex];
-    if (currentEdge.IndexOffset != -1)
+    int iZ = Coordinate::To1D(x, y, z, _edgeMapZ.SizeX, _edgeMapZ.SizeY);
+    if (_edgeMapZ.IndexOffset[iZ] != -1)
     {
-        sum += currentEdge.Intersection;
+        sum += _edgeMapZ.Intersection[iZ];
         cnt++;
     }
 }

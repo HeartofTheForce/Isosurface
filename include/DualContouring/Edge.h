@@ -2,36 +2,17 @@
 #include <memory>
 #include <glm/glm.hpp>
 
-struct Edge
-{
-  glm::vec3 Intersection;
-  float Direction;
-  int IndexOffset;
-
-  Edge(
-      const glm::vec3 &intersection,
-      const float &direction,
-      const int &indexOffset)
-      : Intersection(intersection),
-        Direction(direction),
-        IndexOffset(indexOffset) {}
-
-  Edge()
-      : Intersection(glm::vec3(0.0f)),
-        Direction(0.0f),
-        IndexOffset(-1) {}
-};
 
 struct EdgeMap
 {
-  const int SizeX{0};
-  const int SizeY{0};
-  const int SizeZ{0};
-  const int TotalSize{0};
+  const int SizeX;
+  const int SizeY;
+  const int SizeZ;
+  const int TotalSize;
 
-  std::unique_ptr<Edge[]> Edges{nullptr};
-
-  Edge &Get(const int &x, const int &y, const int &z) const;
+  std::unique_ptr<glm::vec3[]> Intersection;
+  std::unique_ptr<float[]> Direction;
+  std::unique_ptr<int[]> IndexOffset;
 
   EdgeMap(
       const int &sizeX,
@@ -41,7 +22,9 @@ struct EdgeMap
         SizeY(sizeY),
         SizeZ(sizeZ),
         TotalSize(SizeX * SizeY * SizeZ),
-        Edges(std::unique_ptr<Edge[]>(new Edge[TotalSize])) {}
+        Intersection(std::unique_ptr<glm::vec3[]>(new glm::vec3[TotalSize])),
+        Direction(std::unique_ptr<float[]>(new float[TotalSize])),
+        IndexOffset(std::unique_ptr<int[]>(new int[TotalSize])) {}
 
   EdgeMap(const EdgeMap &) = delete;
   EdgeMap &operator=(const EdgeMap &) = delete;
