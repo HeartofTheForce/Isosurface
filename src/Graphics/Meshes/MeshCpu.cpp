@@ -11,6 +11,8 @@ namespace
 
 void MeshCpu::CalculateNormals()
 {
+    assert(VertexCount % 3 == 0);
+
     Normals = std::unique_ptr<glm::vec3[]>(new glm::vec3[VertexCount]);
 #pragma omp parallel for schedule(static, 32)
     for (int i = 0; i < VertexCount; i += 3)
