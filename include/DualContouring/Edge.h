@@ -5,14 +5,14 @@
 
 struct EdgeMap
 {
-  const int SizeX{0};
-  const int SizeY{0};
-  const int SizeZ{0};
-  const int TotalSize{0};
+  const int SizeX;
+  const int SizeY;
+  const int SizeZ;
+  const int TotalSize;
 
-  std::unique_ptr<glm::vec3[]> Intersection = {nullptr};
-  std::unique_ptr<float[]> Direction = {nullptr};
-  std::unique_ptr<int[]> IndexOffset = {nullptr};
+  std::unique_ptr<glm::vec3[]> Intersection;
+  std::unique_ptr<float[]> Direction;
+  std::unique_ptr<int[]> IndexOffset;
 
   EdgeMap(
       const int &sizeX,
