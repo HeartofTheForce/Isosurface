@@ -127,6 +127,9 @@ void MeshGenerator::PopulateMesh(const int &index, MeshCpu &meshCpu)
 MeshCpu MeshGenerator::GenerateMesh()
 {
     std::fill(_cubeCheck.get(), _cubeCheck.get() + _totalSize, false);
+    std::fill(_edgeMapX.IndexOffset.get(), _edgeMapX.IndexOffset.get() + _edgeMapX.TotalSize, -1);
+    std::fill(_edgeMapY.IndexOffset.get(), _edgeMapY.IndexOffset.get() + _edgeMapY.TotalSize, -1);
+    std::fill(_edgeMapZ.IndexOffset.get(), _edgeMapZ.IndexOffset.get() + _edgeMapZ.TotalSize, -1);
 
     _counter = 0;
 #pragma omp parallel
@@ -161,25 +164,18 @@ void MeshGenerator::CalculateEdge(int index)
 
 void MeshGenerator::CalculateEdgeX(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0)
 {
-    if (x >= _sizeX)
-        return;
-
-    int index = Coordinate::To1D(x, y, z, _edgeMapX.SizeX, _edgeMapX.SizeY);
-    if (y <= 0 || z <= 0 ||
+    if (x >= _sizeX ||
+        y <= 0 || z <= 0 ||
         y >= _sizeY || z >= _sizeZ)
-    {
-        _edgeMapX.IndexOffset[index] = -1;
         return;
-    }
 
     float d1;
     glm::vec3 p1;
     _cachedSDF->Get(x + 1, y, z, d1, p1);
     if (NonZeroSign(d0) == NonZeroSign(d1))
-    {
-        _edgeMapX.IndexOffset[index] = -1;
         return;
-    }
+
+    int index = Coordinate::To1D(x, y, z, _edgeMapX.SizeX, _edgeMapX.SizeY);
 
     _cubeCheck[Coordinate::To1D(x, y, z, _sizeX, _sizeY)] = true;
     _cubeCheck[Coordinate::To1D(x, y - 1, z, _sizeX, _sizeY)] = true;
@@ -197,25 +193,18 @@ void MeshGenerator::CalculateEdgeX(const int &x, const int &y, const int &z, con
 
 void MeshGenerator::CalculateEdgeY(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0)
 {
-    if (y >= _sizeY)
-        return;
-
-    int index = Coordinate::To1D(x, y, z, _edgeMapY.SizeX, _edgeMapY.SizeY);
-    if (x <= 0 || z <= 0 ||
+    if (y >= _sizeY ||
+        x <= 0 || z <= 0 ||
         x >= _sizeX || z >= _sizeZ)
-    {
-        _edgeMapY.IndexOffset[index] = -1;
         return;
-    }
 
     float d1;
     glm::vec3 p1;
     _cachedSDF->Get(x, y + 1, z, d1, p1);
     if (NonZeroSign(d0) == NonZeroSign(d1))
-    {
-        _edgeMapY.IndexOffset[index] = -1;
         return;
-    }
+
+    int index = Coordinate::To1D(x, y, z, _edgeMapY.SizeX, _edgeMapY.SizeY);
 
     _cubeCheck[Coordinate::To1D(x, y, z, _sizeX, _sizeY)] = true;
     _cubeCheck[Coordinate::To1D(x - 1, y, z, _sizeX, _sizeY)] = true;
@@ -233,25 +222,18 @@ void MeshGenerator::CalculateEdgeY(const int &x, const int &y, const int &z, con
 
 void MeshGenerator::CalculateEdgeZ(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0)
 {
-    if (z >= _sizeZ)
-        return;
-
-    int index = Coordinate::To1D(x, y, z, _edgeMapZ.SizeX, _edgeMapZ.SizeY);
-    if (x <= 0 || y <= 0 ||
+    if (z >= _sizeZ ||
+        x <= 0 || y <= 0 ||
         x >= _sizeX || y >= _sizeY)
-    {
-        _edgeMapZ.IndexOffset[index] = -1;
         return;
-    }
 
     float d1;
     glm::vec3 p1;
     _cachedSDF->Get(x, y, z + 1, d1, p1);
     if (NonZeroSign(d0) == NonZeroSign(d1))
-    {
-        _edgeMapZ.IndexOffset[index] = -1;
         return;
-    }
+
+    int index = Coordinate::To1D(x, y, z, _edgeMapZ.SizeX, _edgeMapZ.SizeY);
 
     _cubeCheck[Coordinate::To1D(x, y, z, _sizeX, _sizeY)] = true;
     _cubeCheck[Coordinate::To1D(x - 1, y, z, _sizeX, _sizeY)] = true;
