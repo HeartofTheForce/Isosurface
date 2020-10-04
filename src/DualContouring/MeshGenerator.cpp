@@ -30,7 +30,7 @@ MeshCpu MeshGenerator::BuildMesh(const int &totalVertices)
     mesh.VertexCount = totalVertices;
 
     mesh.Vertices = std::unique_ptr<glm::vec3[]>(new glm::vec3[mesh.VertexCount]);
-#pragma omp parallel for schedule(static, 32)
+#pragma omp parallel for schedule(auto)
     for (int i = 0; i < _totalSize; i++)
     {
         PopulateMesh(i, mesh);
@@ -134,12 +134,12 @@ MeshCpu MeshGenerator::GenerateMesh()
     _counter = 0;
 #pragma omp parallel
     {
-#pragma omp for schedule(static, 32)
+#pragma omp for schedule(auto)
         for (int i = 0; i < _cachedSDF->TotalSize; i++)
         {
             CalculateEdge(i);
         }
-#pragma omp for schedule(static, 32)
+#pragma omp for schedule(auto)
         for (int i = 0; i < _totalSize; i++)
         {
             CalculateVertex(i);
