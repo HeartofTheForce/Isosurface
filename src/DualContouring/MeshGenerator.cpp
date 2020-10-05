@@ -3,6 +3,9 @@
 #include <DualContouring/Coordinate.h>
 #include <DualContouring/MeshGenerator.h>
 
+#define EDGE_NO_SIGN_CHANGE -1
+#define EDGE_BORDER -2
+
 namespace
 {
     glm::vec3 VertexInterp(const float &isoLevel, const glm::vec3 &p1, const glm::vec3 &p2, const float &valp1, const float &valp2)
@@ -47,7 +50,7 @@ void MeshGenerator::PopulateMesh(const int &index, MeshCpu &meshCpu)
 
     int iX = Coordinate::To1D(x, y, z, _edgeMapX.SizeX, _edgeMapX.SizeY);
     int oX = _edgeMapX.IndexOffset[iX];
-    if (oX != -1)
+    if (oX >= 0)
     {
         if (_edgeMapX.Direction[iX] == 1)
         {
@@ -73,7 +76,7 @@ void MeshGenerator::PopulateMesh(const int &index, MeshCpu &meshCpu)
 
     int iY = Coordinate::To1D(x, y, z, _edgeMapY.SizeX, _edgeMapY.SizeY);
     int oY = _edgeMapY.IndexOffset[iY];
-    if (oY != -1)
+    if (oY >= 0)
     {
         if (_edgeMapY.Direction[iY] == 1)
         {
@@ -99,7 +102,7 @@ void MeshGenerator::PopulateMesh(const int &index, MeshCpu &meshCpu)
 
     int iZ = Coordinate::To1D(x, y, z, _edgeMapZ.SizeX, _edgeMapZ.SizeY);
     int oZ = _edgeMapZ.IndexOffset[iZ];
-    if (oZ != -1)
+    if (oZ >= 0)
     {
         if (_edgeMapZ.Direction[iZ] == 1)
         {
@@ -127,9 +130,9 @@ void MeshGenerator::PopulateMesh(const int &index, MeshCpu &meshCpu)
 MeshCpu MeshGenerator::GenerateMesh()
 {
     std::fill(_cubeCheck.get(), _cubeCheck.get() + _totalSize, false);
-    std::fill(_edgeMapX.IndexOffset.get(), _edgeMapX.IndexOffset.get() + _edgeMapX.TotalSize, -1);
-    std::fill(_edgeMapY.IndexOffset.get(), _edgeMapY.IndexOffset.get() + _edgeMapY.TotalSize, -1);
-    std::fill(_edgeMapZ.IndexOffset.get(), _edgeMapZ.IndexOffset.get() + _edgeMapZ.TotalSize, -1);
+    std::fill(_edgeMapX.IndexOffset.get(), _edgeMapX.IndexOffset.get() + _edgeMapX.TotalSize, EDGE_NO_SIGN_CHANGE);
+    std::fill(_edgeMapY.IndexOffset.get(), _edgeMapY.IndexOffset.get() + _edgeMapY.TotalSize, EDGE_NO_SIGN_CHANGE);
+    std::fill(_edgeMapZ.IndexOffset.get(), _edgeMapZ.IndexOffset.get() + _edgeMapZ.TotalSize, EDGE_NO_SIGN_CHANGE);
 
     _counter = 0;
 #pragma omp parallel
@@ -164,9 +167,7 @@ void MeshGenerator::CalculateEdge(int index)
 
 void MeshGenerator::CalculateEdgeX(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0)
 {
-    if (x >= _sizeX ||
-        y <= 0 || z <= 0 ||
-        y >= _sizeY || z >= _sizeZ)
+    if (x >= _sizeX)
         return;
 
     float d1;
@@ -177,25 +178,31 @@ void MeshGenerator::CalculateEdgeX(const int &x, const int &y, const int &z, con
 
     int index = Coordinate::To1D(x, y, z, _edgeMapX.SizeX, _edgeMapX.SizeY);
 
-    _cubeCheck[Coordinate::To1D(x, y, z, _sizeX, _sizeY)] = true;
-    _cubeCheck[Coordinate::To1D(x, y - 1, z, _sizeX, _sizeY)] = true;
-    _cubeCheck[Coordinate::To1D(x, y - 1, z - 1, _sizeX, _sizeY)] = true;
-    _cubeCheck[Coordinate::To1D(x, y, z - 1, _sizeX, _sizeY)] = true;
-
-    int indexOffset;
-#pragma omp atomic capture
-    indexOffset = _counter++;
-
     _edgeMapX.Intersection[index] = VertexInterp(0, p0, p1, d0, d1);
     _edgeMapX.Direction[index] = NonZeroSign(d1);
-    _edgeMapX.IndexOffset[index] = indexOffset * 6;
+
+    if (y > 0 && z > 0 && y < _sizeY && z < _sizeZ)
+    {
+        int indexOffset;
+#pragma omp atomic capture
+        indexOffset = _counter++;
+
+        _edgeMapX.IndexOffset[index] = indexOffset * 6;
+
+        _cubeCheck[Coordinate::To1D(x, y, z, _sizeX, _sizeY)] = true;
+        _cubeCheck[Coordinate::To1D(x, y - 1, z, _sizeX, _sizeY)] = true;
+        _cubeCheck[Coordinate::To1D(x, y - 1, z - 1, _sizeX, _sizeY)] = true;
+        _cubeCheck[Coordinate::To1D(x, y, z - 1, _sizeX, _sizeY)] = true;
+    }
+    else
+    {
+        _edgeMapX.IndexOffset[index] = EDGE_BORDER;
+    }
 }
 
 void MeshGenerator::CalculateEdgeY(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0)
 {
-    if (y >= _sizeY ||
-        x <= 0 || z <= 0 ||
-        x >= _sizeX || z >= _sizeZ)
+    if (y >= _sizeY)
         return;
 
     float d1;
@@ -206,25 +213,31 @@ void MeshGenerator::CalculateEdgeY(const int &x, const int &y, const int &z, con
 
     int index = Coordinate::To1D(x, y, z, _edgeMapY.SizeX, _edgeMapY.SizeY);
 
-    _cubeCheck[Coordinate::To1D(x, y, z, _sizeX, _sizeY)] = true;
-    _cubeCheck[Coordinate::To1D(x - 1, y, z, _sizeX, _sizeY)] = true;
-    _cubeCheck[Coordinate::To1D(x - 1, y, z - 1, _sizeX, _sizeY)] = true;
-    _cubeCheck[Coordinate::To1D(x, y, z - 1, _sizeX, _sizeY)] = true;
-
-    int indexOffset;
-#pragma omp atomic capture
-    indexOffset = _counter++;
-
     _edgeMapY.Intersection[index] = VertexInterp(0, p0, p1, d0, d1);
     _edgeMapY.Direction[index] = NonZeroSign(d1);
-    _edgeMapY.IndexOffset[index] = indexOffset * 6;
+
+    if (x > 0 && z > 0 && x < _sizeX && z < _sizeZ)
+    {
+        int indexOffset;
+#pragma omp atomic capture
+        indexOffset = _counter++;
+
+        _edgeMapY.IndexOffset[index] = indexOffset * 6;
+
+        _cubeCheck[Coordinate::To1D(x, y, z, _sizeX, _sizeY)] = true;
+        _cubeCheck[Coordinate::To1D(x - 1, y, z, _sizeX, _sizeY)] = true;
+        _cubeCheck[Coordinate::To1D(x - 1, y, z - 1, _sizeX, _sizeY)] = true;
+        _cubeCheck[Coordinate::To1D(x, y, z - 1, _sizeX, _sizeY)] = true;
+    }
+    else
+    {
+        _edgeMapY.IndexOffset[index] = EDGE_BORDER;
+    }
 }
 
 void MeshGenerator::CalculateEdgeZ(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0)
 {
-    if (z >= _sizeZ ||
-        x <= 0 || y <= 0 ||
-        x >= _sizeX || y >= _sizeY)
+    if (z >= _sizeZ)
         return;
 
     float d1;
@@ -235,18 +248,26 @@ void MeshGenerator::CalculateEdgeZ(const int &x, const int &y, const int &z, con
 
     int index = Coordinate::To1D(x, y, z, _edgeMapZ.SizeX, _edgeMapZ.SizeY);
 
-    _cubeCheck[Coordinate::To1D(x, y, z, _sizeX, _sizeY)] = true;
-    _cubeCheck[Coordinate::To1D(x - 1, y, z, _sizeX, _sizeY)] = true;
-    _cubeCheck[Coordinate::To1D(x - 1, y - 1, z, _sizeX, _sizeY)] = true;
-    _cubeCheck[Coordinate::To1D(x, y - 1, z, _sizeX, _sizeY)] = true;
-
-    int indexOffset;
-#pragma omp atomic capture
-    indexOffset = _counter++;
-
     _edgeMapZ.Intersection[index] = VertexInterp(0, p0, p1, d0, d1);
     _edgeMapZ.Direction[index] = NonZeroSign(d1);
-    _edgeMapZ.IndexOffset[index] = indexOffset * 6;
+
+    if (x > 0 && y > 0 && x < _sizeX && y < _sizeY)
+    {
+        int indexOffset;
+#pragma omp atomic capture
+        indexOffset = _counter++;
+
+        _edgeMapZ.IndexOffset[index] = indexOffset * 6;
+
+        _cubeCheck[Coordinate::To1D(x, y, z, _sizeX, _sizeY)] = true;
+        _cubeCheck[Coordinate::To1D(x - 1, y, z, _sizeX, _sizeY)] = true;
+        _cubeCheck[Coordinate::To1D(x - 1, y - 1, z, _sizeX, _sizeY)] = true;
+        _cubeCheck[Coordinate::To1D(x, y - 1, z, _sizeX, _sizeY)] = true;
+    }
+    else
+    {
+        _edgeMapZ.IndexOffset[index] = EDGE_BORDER;
+    }
 }
 
 void MeshGenerator::CalculateVertex(int index)
@@ -280,7 +301,7 @@ void MeshGenerator::CalculateVertex(int index)
 void MeshGenerator::AggregateEdgeX(const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt)
 {
     int iX = Coordinate::To1D(x, y, z, _edgeMapX.SizeX, _edgeMapX.SizeY);
-    if (_edgeMapX.IndexOffset[iX] != -1)
+    if (_edgeMapX.IndexOffset[iX] != EDGE_NO_SIGN_CHANGE)
     {
         sum += _edgeMapX.Intersection[iX];
         cnt++;
@@ -290,7 +311,7 @@ void MeshGenerator::AggregateEdgeX(const int &x, const int &y, const int &z, glm
 void MeshGenerator::AggregateEdgeY(const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt)
 {
     int iY = Coordinate::To1D(x, y, z, _edgeMapY.SizeX, _edgeMapY.SizeY);
-    if (_edgeMapY.IndexOffset[iY] != -1)
+    if (_edgeMapY.IndexOffset[iY] != EDGE_NO_SIGN_CHANGE)
     {
         sum += _edgeMapY.Intersection[iY];
         cnt++;
@@ -300,7 +321,7 @@ void MeshGenerator::AggregateEdgeY(const int &x, const int &y, const int &z, glm
 void MeshGenerator::AggregateEdgeZ(const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt)
 {
     int iZ = Coordinate::To1D(x, y, z, _edgeMapZ.SizeX, _edgeMapZ.SizeY);
-    if (_edgeMapZ.IndexOffset[iZ] != -1)
+    if (_edgeMapZ.IndexOffset[iZ] != EDGE_NO_SIGN_CHANGE)
     {
         sum += _edgeMapZ.Intersection[iZ];
         cnt++;
