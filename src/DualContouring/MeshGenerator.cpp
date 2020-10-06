@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <omp.h>
-#include <DualContouring/Coordinate.h>
 #include <DualContouring/MeshGenerator.h>
 
 #define EDGE_NO_SIGN_CHANGE -1
