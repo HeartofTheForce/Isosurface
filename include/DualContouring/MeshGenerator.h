@@ -1,5 +1,4 @@
 #pragma once
-#include <DualContouring/IndexMap.h>
 #include <DualContouring/CachedSDF.h>
 #include <DualContouring/Edge.h>
 #include <Graphics/Meshes/MeshCpu.h>
@@ -35,10 +34,10 @@ public:
 
     MeshGenerator(CachedSDF *cachedSDF)
         : _cachedSDF(cachedSDF),
-          Index(_cachedSDF->SizeX - 1, _cachedSDF->SizeY - 1, _cachedSDF->SizeZ - 1),
-          _edgeMapX(EdgeMap{Index.SizeX, _cachedSDF->SizeY, _cachedSDF->SizeZ}),
-          _edgeMapY(EdgeMap{_cachedSDF->SizeX, Index.SizeY, _cachedSDF->SizeZ}),
-          _edgeMapZ(EdgeMap{_cachedSDF->SizeX, _cachedSDF->SizeY, Index.SizeZ}),
+          Index(_cachedSDF->Index.SizeX - 1, _cachedSDF->Index.SizeY - 1, _cachedSDF->Index.SizeZ - 1),
+          _edgeMapX(EdgeMap{Index.SizeX, _cachedSDF->Index.SizeY, _cachedSDF->Index.SizeZ}),
+          _edgeMapY(EdgeMap{_cachedSDF->Index.SizeX, Index.SizeY, _cachedSDF->Index.SizeZ}),
+          _edgeMapZ(EdgeMap{_cachedSDF->Index.SizeX, _cachedSDF->Index.SizeY, Index.SizeZ}),
           _cubeCheck(std::unique_ptr<bool[]>(new bool[Index.TotalSize])),
           _cubeVertices(std::unique_ptr<glm::vec3[]>(new glm::vec3[Index.TotalSize])) {}
 

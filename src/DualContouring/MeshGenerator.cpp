@@ -138,7 +138,7 @@ MeshCpu MeshGenerator::GenerateMesh()
 #pragma omp parallel
     {
 #pragma omp for schedule(auto)
-        for (int i = 0; i < _cachedSDF->TotalSize; i++)
+        for (int i = 0; i < _cachedSDF->Index.TotalSize; i++)
         {
             CalculateEdge(i);
         }
@@ -158,7 +158,7 @@ void MeshGenerator::CalculateEdge(int index)
     glm::vec3 p0 = _cachedSDF->CachedPositions[index];
 
     int x, y, z;
-    Coordinate::To3D(index, _cachedSDF->SizeX, _cachedSDF->SizeY, x, y, z);
+    _cachedSDF->Index.To3D(index, x, y, z);
 
     CalculateEdgeX(x, y, z, d0, p0);
     CalculateEdgeY(x, y, z, d0, p0);
