@@ -5,12 +5,16 @@ namespace
     const float PitchLimit = glm::radians(90.0f);
     const float SensitivtyFactor = 0.022f;
 
-    // float FovHorizontalToVertical(float fovH, float aspect)
+    // float FovH2V(float hFov, float aspect)
     // {
-    //     float targetFovH = glm::radians(fovH);
-    //     float targetAspect = aspect;
-    //     float fovY = 2 * glm::atan(glm::tan(targetFovH / 2) * 1 / targetAspect);
-    //     return fovY;
+    //     float vFov = 2 * glm::atan(glm::tan(hFov / 2) / aspect);
+    //     return vFov;
+    // }
+
+    // float FovV2H(float vFov, float aspect)
+    // {
+    //     float hFov = 2 * glm::atan(glm::tan(vFov / 2) * aspect);
+    //     return hFov;
     // }
 } // namespace
 

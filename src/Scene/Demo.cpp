@@ -74,7 +74,7 @@ void Demo()
     {
         glm::vec3 moveDirection = inputHandler.GetMoveDirection();
         glm::vec2 mouseDelta = inputHandler.GetMouseDelta();
-        camera.Update(5.0f * inputHandler.DeltaTime, moveDirection, 1.5, mouseDelta);
+        camera.Update(5.0f * inputHandler.DeltaTime, moveDirection, 0.75f, mouseDelta);
 
         MeshCpu generatedCpu = meshGenerator.GenerateMesh();
         MeshGpu generatedGpu = {};
