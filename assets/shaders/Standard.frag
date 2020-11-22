@@ -1,6 +1,6 @@
 #version 330
-in vec3 fragPosition;
-in vec3 normal;
+in vec3 worldPosition;
+in vec3 worldNormal;
 
 layout(location = 0) out vec4 fragColor;
 
@@ -23,8 +23,8 @@ uniform vec3 viewPosition;
 
 void main()
 {
-    vec3 normal = normalize(normal);
-    vec3 lightDir = normalize(light.position - fragPosition);
+    vec3 normal = normalize(worldNormal);
+    vec3 lightDir = normalize(light.position - worldPosition);
 
     // ambient
     vec3 ambient = light.ambient * material.diffuse;
@@ -34,7 +34,7 @@ void main()
     vec3 diffuse = light.diffuse * (diffuseFactor * material.diffuse);
 
     // specular
-    vec3 viewDir = normalize(viewPosition - fragPosition);
+    vec3 viewDir = normalize(viewPosition - worldPosition);
     vec3 reflectDir = reflect(-lightDir, normal);
     float specularFactor = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     vec3 specular = light.specular * (specularFactor * material.specular);

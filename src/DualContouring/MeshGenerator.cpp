@@ -279,50 +279,36 @@ void MeshGenerator::CalculateVertex(int index)
     int cnt = 0;
     glm::vec3 sum = glm::vec3(0.0f);
 
-    AggregateEdgeX(x, y, z, sum, cnt);
-    AggregateEdgeX(x, y + 1, z, sum, cnt);
-    AggregateEdgeX(x, y + 1, z + 1, sum, cnt);
-    AggregateEdgeX(x, y, z + 1, sum, cnt);
+    AggregateEdge(_edgeMapX, x, y, z, sum, cnt);
+    AggregateEdge(_edgeMapX, x, y + 1, z, sum, cnt);
+    AggregateEdge(_edgeMapX, x, y + 1, z + 1, sum, cnt);
+    AggregateEdge(_edgeMapX, x, y, z + 1, sum, cnt);
 
-    AggregateEdgeY(x, y, z, sum, cnt);
-    AggregateEdgeY(x + 1, y, z, sum, cnt);
-    AggregateEdgeY(x + 1, y, z + 1, sum, cnt);
-    AggregateEdgeY(x, y, z + 1, sum, cnt);
+    AggregateEdge(_edgeMapY, x, y, z, sum, cnt);
+    AggregateEdge(_edgeMapY, x + 1, y, z, sum, cnt);
+    AggregateEdge(_edgeMapY, x + 1, y, z + 1, sum, cnt);
+    AggregateEdge(_edgeMapY, x, y, z + 1, sum, cnt);
 
-    AggregateEdgeZ(x, y, z, sum, cnt);
-    AggregateEdgeZ(x + 1, y, z, sum, cnt);
-    AggregateEdgeZ(x + 1, y + 1, z, sum, cnt);
-    AggregateEdgeZ(x, y + 1, z, sum, cnt);
+    AggregateEdge(_edgeMapZ, x, y, z, sum, cnt);
+    AggregateEdge(_edgeMapZ, x + 1, y, z, sum, cnt);
+    AggregateEdge(_edgeMapZ, x + 1, y + 1, z, sum, cnt);
+    AggregateEdge(_edgeMapZ, x, y + 1, z, sum, cnt);
 
     _cubeVertices[index] = sum / (float)cnt;
 }
 
-void MeshGenerator::AggregateEdgeX(const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt)
+void MeshGenerator::AggregateEdge(
+    const EdgeMap &edgeMap,
+    const int &x,
+    const int &y,
+    const int &z,
+    glm::vec3 &sum,
+    int &cnt)
 {
-    int iX = _edgeMapX.Index.To1D(x, y, z);
-    if (_edgeMapX.IndexOffset[iX] != EDGE_NO_SIGN_CHANGE)
+    int iX = edgeMap.Index.To1D(x, y, z);
+    if (edgeMap.IndexOffset[iX] != EDGE_NO_SIGN_CHANGE)
     {
-        sum += _edgeMapX.Intersection[iX];
-        cnt++;
-    }
-}
-
-void MeshGenerator::AggregateEdgeY(const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt)
-{
-    int iY = _edgeMapY.Index.To1D(x, y, z);
-    if (_edgeMapY.IndexOffset[iY] != EDGE_NO_SIGN_CHANGE)
-    {
-        sum += _edgeMapY.Intersection[iY];
-        cnt++;
-    }
-}
-
-void MeshGenerator::AggregateEdgeZ(const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt)
-{
-    int iZ = _edgeMapZ.Index.To1D(x, y, z);
-    if (_edgeMapZ.IndexOffset[iZ] != EDGE_NO_SIGN_CHANGE)
-    {
-        sum += _edgeMapZ.Intersection[iZ];
+        sum += edgeMap.Intersection[iX];
         cnt++;
     }
 }
