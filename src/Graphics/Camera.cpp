@@ -23,12 +23,12 @@ void Camera::Update(const float &speed, const glm::vec3 &moveDirection, const fl
     _yaw += glm::radians(mouseOffset.x) * mouseSensitivity * SensitivtyFactor;
     _pitch += glm::radians(mouseOffset.y) * mouseSensitivity * SensitivtyFactor;
 
-    Transform.Orientation(glm::quat(glm::vec3(_pitch, _yaw, 0.0f)));
-
     if (_pitch >= PitchLimit)
-        _pitch = PitchLimit - FLT_EPSILON;
+        _pitch = PitchLimit;
     if (_pitch <= -PitchLimit)
-        _pitch = -PitchLimit + FLT_EPSILON;
+        _pitch = -PitchLimit;
+
+    Transform.Orientation(glm::quat(glm::vec3(_pitch, _yaw, 0.0f)));
 
     Transform.Position(Transform.Position() + (speed * Transform.Forward() * moveDirection.z));
     Transform.Position(Transform.Position() + (speed * Transform.Right() * moveDirection.x));
