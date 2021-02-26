@@ -5,7 +5,7 @@
 
 class MeshGenerator
 {
-    const CachedSDF *_cachedSDF;
+    const std::shared_ptr<CachedSDF> _cachedSDF;
 
     const IndexMap Index;
 
@@ -39,7 +39,7 @@ class MeshGenerator
 public:
     MeshCpu GenerateMesh();
 
-    MeshGenerator(CachedSDF *cachedSDF)
+    MeshGenerator(std::shared_ptr<CachedSDF> cachedSDF)
         : _cachedSDF(cachedSDF),
           Index(_cachedSDF->Index.SizeX - 1, _cachedSDF->Index.SizeY - 1, _cachedSDF->Index.SizeZ - 1),
           _edgeMapX(EdgeMap{Index.SizeX, _cachedSDF->Index.SizeY, _cachedSDF->Index.SizeZ}),
@@ -47,7 +47,4 @@ public:
           _edgeMapZ(EdgeMap{_cachedSDF->Index.SizeX, _cachedSDF->Index.SizeY, Index.SizeZ}),
           _cubeCheck(std::unique_ptr<bool[]>(new bool[Index.TotalSize])),
           _cubeVertices(std::unique_ptr<glm::vec3[]>(new glm::vec3[Index.TotalSize])) {}
-
-    MeshGenerator(const MeshGenerator &) = delete;
-    MeshGenerator &operator=(const MeshGenerator &) = delete;
 };

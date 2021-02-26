@@ -25,6 +25,4 @@ public:
     glm::mat4 GetProjectionMatrix() const;
 
     Camera(float width, float height);
-    Camera(const Camera &) = delete;
-    Camera &operator=(const Camera &) = delete;
 };

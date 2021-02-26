@@ -40,10 +40,4 @@ public:
     glm::vec3 Forward() const { return _orientation * WorldForward; }
 
     glm::mat4 GetMatrix();
-
-    Transform() = default;
-    Transform(const Transform &) = delete;
-    Transform &operator=(const Transform &) = delete;
-    Transform(Transform &&) = default;
-    Transform &operator=(Transform &&) = default;
 };

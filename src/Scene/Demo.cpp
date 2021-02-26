@@ -64,9 +64,9 @@ void Demo()
     const float Offset = (Size - 1) / 2.0f;
     auto shape = Translate(glm::vec3(Offset, Offset, Offset), Box(glm::vec3(Extent, Extent, Extent)));
 
-    CachedSDF cachedSDF = {Size, Size, Size};
-    cachedSDF.Measure(glm::mat4(1.0f), Noise);
-    MeshGenerator meshGenerator = {&cachedSDF};
+    std::shared_ptr<CachedSDF> cachedSDF = std::shared_ptr<CachedSDF>(new CachedSDF{Size, Size, Size});
+    cachedSDF->Measure(glm::mat4(1.0f), Noise);
+    MeshGenerator meshGenerator = {cachedSDF};
 
     Camera camera = {WIDTH, HEIGHT};
 

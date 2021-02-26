@@ -19,10 +19,4 @@ struct MeshCpu
 
     void CalculateNormals();
     void LoadGpu(MeshGpu &meshGpu);
-
-    MeshCpu() = default;
-    MeshCpu(const MeshCpu &) = delete;
-    MeshCpu &operator=(const MeshCpu &) = delete;
-    MeshCpu(MeshCpu &&) = default;
-    MeshCpu &operator=(MeshCpu &&) = default;
 };

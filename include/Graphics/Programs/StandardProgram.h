@@ -12,6 +12,4 @@ public:
     void Render(Camera &camera, const MeshGpu &meshGpu, const Light &light, const Material &material, Transform targets[], const int &targetCount);
 
     StandardProgram();
-    StandardProgram(const StandardProgram &) = delete;
-    StandardProgram &operator=(const StandardProgram &) = delete;
 };

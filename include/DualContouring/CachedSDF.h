@@ -29,7 +29,4 @@ struct CachedSDF
         : Index(sizeX, sizeY, sizeZ),
           CachedDistances(std::unique_ptr<float[]>(new float[Index.TotalSize])),
           CachedPositions(std::unique_ptr<glm::vec3[]>(new glm::vec3[Index.TotalSize])) {}
-
-    CachedSDF(const CachedSDF &) = delete;
-    CachedSDF &operator=(const CachedSDF &) = delete;
 };
