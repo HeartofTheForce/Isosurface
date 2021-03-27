@@ -25,16 +25,7 @@ class MeshGenerator
     inline void CalculateEdgeY(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0);
     inline void CalculateEdgeZ(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0);
     inline void CalculateVertex(int index);
-    inline void AggregateEdge(
-        const EdgeMap &edgeMap,
-        const int &x,
-        const int &y,
-        const int &z,
-        glm::vec3 &sum,
-        int &cnt);
-    inline void AggregateEdgeX(const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt);
-    inline void AggregateEdgeY(const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt);
-    inline void AggregateEdgeZ(const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt);
+    inline void AggregateEdge(const EdgeMap &edgeMap, const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt);
 
 public:
     MeshCpu GenerateMesh();

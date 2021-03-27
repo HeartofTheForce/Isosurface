@@ -126,31 +126,6 @@ void MeshGenerator::PopulateMesh(const int &index, MeshCpu &meshCpu)
     }
 }
 
-MeshCpu MeshGenerator::GenerateMesh()
-{
-    std::fill(_cubeCheck.get(), _cubeCheck.get() + Index.TotalSize, false);
-    std::fill(_edgeMapX.IndexOffset.get(), _edgeMapX.IndexOffset.get() + _edgeMapX.Index.TotalSize, EDGE_NO_SIGN_CHANGE);
-    std::fill(_edgeMapY.IndexOffset.get(), _edgeMapY.IndexOffset.get() + _edgeMapY.Index.TotalSize, EDGE_NO_SIGN_CHANGE);
-    std::fill(_edgeMapZ.IndexOffset.get(), _edgeMapZ.IndexOffset.get() + _edgeMapZ.Index.TotalSize, EDGE_NO_SIGN_CHANGE);
-
-    _counter = 0;
-#pragma omp parallel
-    {
-#pragma omp for schedule(auto)
-        for (int i = 0; i < _cachedSDF->Index.TotalSize; i++)
-        {
-            CalculateEdge(i);
-        }
-#pragma omp for schedule(auto)
-        for (int i = 0; i < Index.TotalSize; i++)
-        {
-            CalculateVertex(i);
-        }
-    }
-
-    return BuildMesh(_counter * 6);
-}
-
 void MeshGenerator::CalculateEdge(int index)
 {
     float d0 = _cachedSDF->CachedDistances[index];
@@ -297,13 +272,7 @@ void MeshGenerator::CalculateVertex(int index)
     _cubeVertices[index] = sum / (float)cnt;
 }
 
-void MeshGenerator::AggregateEdge(
-    const EdgeMap &edgeMap,
-    const int &x,
-    const int &y,
-    const int &z,
-    glm::vec3 &sum,
-    int &cnt)
+void MeshGenerator::AggregateEdge(const EdgeMap &edgeMap, const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt)
 {
     int iX = edgeMap.Index.To1D(x, y, z);
     if (edgeMap.IndexOffset[iX] != EDGE_NO_SIGN_CHANGE)
@@ -311,4 +280,29 @@ void MeshGenerator::AggregateEdge(
         sum += edgeMap.Intersection[iX];
         cnt++;
     }
+}
+
+MeshCpu MeshGenerator::GenerateMesh()
+{
+    std::fill(_cubeCheck.get(), _cubeCheck.get() + Index.TotalSize, false);
+    std::fill(_edgeMapX.IndexOffset.get(), _edgeMapX.IndexOffset.get() + _edgeMapX.Index.TotalSize, EDGE_NO_SIGN_CHANGE);
+    std::fill(_edgeMapY.IndexOffset.get(), _edgeMapY.IndexOffset.get() + _edgeMapY.Index.TotalSize, EDGE_NO_SIGN_CHANGE);
+    std::fill(_edgeMapZ.IndexOffset.get(), _edgeMapZ.IndexOffset.get() + _edgeMapZ.Index.TotalSize, EDGE_NO_SIGN_CHANGE);
+
+    _counter = 0;
+#pragma omp parallel
+    {
+#pragma omp for schedule(auto)
+        for (int i = 0; i < _cachedSDF->Index.TotalSize; i++)
+        {
+            CalculateEdge(i);
+        }
+#pragma omp for schedule(auto)
+        for (int i = 0; i < Index.TotalSize; i++)
+        {
+            CalculateVertex(i);
+        }
+    }
+
+    return BuildMesh(_counter * 6);
 }
