@@ -43,8 +43,8 @@ void MeshCpu::LoadGpu(MeshGpu &meshGpu)
 
     meshGpu.VboCount = VboCount;
     meshGpu.VertexCount = VertexCount;
-    meshGpu.VboIds = std::unique_ptr<GLuint[]>(new GLuint[meshGpu.VboCount]);
-    meshGpu.VboStrides = std::unique_ptr<GLuint[]>(new GLuint[meshGpu.VboCount]);
+    meshGpu.VboIds = std::unique_ptr<GLuint[]>(new GLuint[meshGpu.VboCount]{0});
+    meshGpu.VboStrides = std::unique_ptr<GLuint[]>(new GLuint[meshGpu.VboCount]{0});
 
     LoadBuffer(meshGpu, VertexVboIndex, Vertices.get());
     LoadBuffer(meshGpu, NormalVboIndex, Normals.get());
