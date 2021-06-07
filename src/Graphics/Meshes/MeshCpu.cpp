@@ -34,12 +34,11 @@ const int MeshCpu::NormalVboIndex = 1;
 const int MeshCpu::TexCoordVboIndex = 2;
 const int MeshCpu::ColorVboIndex = 3;
 
-void MeshCpu::LoadGpu(MeshGpu &meshGpu)
+MeshGpu MeshCpu::LoadGpu(Program &program)
 {
     assert(Vertices != nullptr);
-    assert(meshGpu.VboCount == 0);
-    assert(meshGpu.VboIds == nullptr);
-    assert(meshGpu.VboStrides == nullptr);
+
+    MeshGpu meshGpu = {};
 
     meshGpu.VboCount = VboCount;
     meshGpu.VertexCount = VertexCount;
@@ -50,4 +49,8 @@ void MeshCpu::LoadGpu(MeshGpu &meshGpu)
     LoadBuffer(meshGpu, NormalVboIndex, Normals.get());
     LoadBuffer(meshGpu, TexCoordVboIndex, TexCoords.get());
     LoadBuffer(meshGpu, ColorVboIndex, Colors.get());
+
+    program.GenerateVao(meshGpu);
+
+    return meshGpu;
 }

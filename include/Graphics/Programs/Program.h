@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <Graphics/Programs/Shader.h>
-#include <Graphics/Meshes/MeshCpu.h>
+#include <Graphics/Meshes/MeshGpu.h>
 #include <Graphics/Camera.h>
 
 class Program

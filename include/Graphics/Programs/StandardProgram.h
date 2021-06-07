@@ -1,5 +1,6 @@
 #pragma once
 #include <Graphics/Programs/Program.h>
+#include <Graphics/Meshes/MeshCpu.h>
 #include <Graphics/Material.h>
 #include <Graphics/Light.h>
 #include <Transform.h>

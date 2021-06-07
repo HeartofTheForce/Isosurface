@@ -19,7 +19,8 @@
 
 SDF Box(glm::vec3 b)
 {
-    return [b](glm::vec3 p) {
+    return [b](glm::vec3 p)
+    {
         glm::vec3 q = glm::vec3(glm::abs(p.x), glm::abs(p.y), glm::abs(p.z)) - b;
         glm::vec3 qMax = glm::vec3(glm::max(q.x, 0.0f), glm::max(q.y, 0.0f), glm::max(q.z, 0.0f));
         return glm::length(qMax) + glm::min(glm::max(q.x, glm::max(q.y, q.z)), 0.0f);
@@ -28,7 +29,8 @@ SDF Box(glm::vec3 b)
 
 SDF Translate(glm::vec3 offset, SDF f)
 {
-    return [offset, f](glm::vec3 p) {
+    return [offset, f](glm::vec3 p)
+    {
         p -= offset;
         return f(p);
     };
@@ -77,9 +79,7 @@ void Demo()
         camera.Update(5.0f * inputHandler.DeltaTime, moveDirection, 0.75f, mouseDelta);
 
         MeshCpu generatedCpu = meshGenerator.GenerateMesh();
-        MeshGpu generatedGpu = {};
-        generatedCpu.LoadGpu(generatedGpu);
-        standardProgram.GenerateVao(generatedGpu);
+        MeshGpu generatedGpu = generatedCpu.LoadGpu(standardProgram);
         Transform generatedTransform = {};
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

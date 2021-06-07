@@ -2,6 +2,7 @@
 #include <glad/gl.h>
 #include <glm/glm.hpp>
 #include <Graphics/Meshes/MeshGpu.h>
+#include <Graphics/Programs/Program.h>
 
 struct MeshCpu
 {
@@ -18,5 +19,5 @@ struct MeshCpu
     std::unique_ptr<glm::vec3[]> Colors{nullptr};
 
     void CalculateNormals();
-    void LoadGpu(MeshGpu &meshGpu);
+    MeshGpu LoadGpu(Program &program);
 };
