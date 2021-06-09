@@ -19,3 +19,22 @@ MeshGpu::~MeshGpu()
     glDeleteVertexArrays(1, &VaoId);
     glDeleteBuffers(VboCount, VboIds.get());
 }
+
+MeshGpu::MeshGpu(MeshGpu &&other)
+{
+    *this = std::move(other);
+}
+
+MeshGpu &MeshGpu::operator=(MeshGpu &&other)
+{
+    VaoId = other.VaoId;
+    other.VaoId = 0;
+
+    VboCount = other.VboCount;
+    other.VboCount = 0;
+
+    VboIds = std::move(other.VboIds);
+    VboStrides = std::move(other.VboStrides);
+
+    return *this;
+}

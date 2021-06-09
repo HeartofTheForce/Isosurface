@@ -18,21 +18,6 @@ struct MeshGpu
     ~MeshGpu();
     MeshGpu(const MeshGpu &) = delete;
     MeshGpu &operator=(const MeshGpu &) = delete;
-    MeshGpu(MeshGpu &&other)
-    {
-        *this = std::move(other);
-    };
-    MeshGpu &operator=(MeshGpu &&other)
-    {
-        VaoId = other.VaoId;
-        other.VaoId = 0;
-
-        VboCount = other.VboCount;
-        other.VboCount = 0;
-
-        VboIds = std::move(other.VboIds);
-        VboStrides = std::move(other.VboStrides);
-
-        return *this;
-    };
+    MeshGpu(MeshGpu &&other);
+    MeshGpu &operator=(MeshGpu &&other);
 };
