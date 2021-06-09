@@ -1,11 +1,11 @@
-#include <glm/glm.hpp>
-#include <PerlinNoise.hpp>
-#include <Utility/WindowHandler.h>
-#include <Utility/InputHandler.h>
-#include <Graphics/Programs/StandardProgram.h>
-#include <Graphics/Camera.h>
 #include <DualContouring/CachedSDF.h>
 #include <DualContouring/MeshGenerator.h>
+#include <Graphics/Camera.h>
+#include <Graphics/Programs/StandardProgram.h>
+#include <PerlinNoise.hpp>
+#include <Utility/InputHandler.h>
+#include <Utility/WindowHandler.h>
+#include <glm/glm.hpp>
 
 #define FULLSCREEN true
 
@@ -19,8 +19,7 @@
 
 SDF Box(glm::vec3 b)
 {
-    return [b](glm::vec3 p)
-    {
+    return [b](glm::vec3 p) {
         glm::vec3 q = glm::vec3(glm::abs(p.x), glm::abs(p.y), glm::abs(p.z)) - b;
         glm::vec3 qMax = glm::vec3(glm::max(q.x, 0.0f), glm::max(q.y, 0.0f), glm::max(q.z, 0.0f));
         return glm::length(qMax) + glm::min(glm::max(q.x, glm::max(q.y, q.z)), 0.0f);
@@ -29,8 +28,7 @@ SDF Box(glm::vec3 b)
 
 SDF Translate(glm::vec3 offset, SDF f)
 {
-    return [offset, f](glm::vec3 p)
-    {
+    return [offset, f](glm::vec3 p) {
         p -= offset;
         return f(p);
     };
@@ -48,7 +46,7 @@ float Noise(glm::vec3 p)
 
 void Demo()
 {
-    GLFWwindow *window = WindowHandler::Instance().CreateWindow(WIDTH, HEIGHT, FULLSCREEN, "Test Title");
+    GLFWwindow* window = WindowHandler::Instance().CreateWindow(WIDTH, HEIGHT, FULLSCREEN, "Test Title");
     InputHandler inputHandler = {window};
 
     StandardProgram standardProgram = {};

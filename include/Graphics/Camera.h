@@ -1,7 +1,7 @@
 #pragma once
+#include <Transform.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <Transform.h>
 
 class Camera
 {
@@ -17,10 +17,10 @@ class Camera
     float _near{0.1f};
     float _far{100.0f};
 
-public:
+  public:
     Transform Transform{};
 
-    void Update(const float &speed, const glm::vec3 &moveDirection, const float &mouseSensitivity, const glm::vec2 &mouseOffset);
+    void Update(const float& speed, const glm::vec3& moveDirection, const float& mouseSensitivity, const glm::vec2& mouseOffset);
     glm::mat4 GetViewMatrix();
     glm::mat4 GetProjectionMatrix() const;
 

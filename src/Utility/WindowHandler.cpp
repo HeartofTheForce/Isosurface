@@ -2,20 +2,20 @@
 
 namespace
 {
-    void framebuffer_size_callback(__attribute__((unused)) GLFWwindow *window, int width, int height)
+void framebuffer_size_callback(__attribute__((unused)) GLFWwindow* window, int width, int height)
+{
+    GLFWwindow* currentWindow = glfwGetCurrentContext();
+    if (currentWindow != window)
     {
-        GLFWwindow *currentWindow = glfwGetCurrentContext();
-        if (currentWindow != window)
-        {
-            glfwMakeContextCurrent(window);
-            glViewport(0, 0, width, height);
-            glfwMakeContextCurrent(currentWindow);
-        }
-        else
-        {
-            glViewport(0, 0, width, height);
-        }
+        glfwMakeContextCurrent(window);
+        glViewport(0, 0, width, height);
+        glfwMakeContextCurrent(currentWindow);
     }
+    else
+    {
+        glViewport(0, 0, width, height);
+    }
+}
 } // namespace
 
 WindowHandler::WindowHandler()
@@ -37,9 +37,9 @@ WindowHandler::~WindowHandler()
     glfwTerminate();
 }
 
-GLFWwindow *WindowHandler::CreateWindow(const int &width, const int &height, const bool &fullscreen, const std::string &title)
+GLFWwindow* WindowHandler::CreateWindow(const int& width, const int& height, const bool& fullscreen, const std::string& title)
 {
-    GLFWwindow *window = glfwCreateWindow(width, height, title.c_str(), fullscreen ? glfwGetPrimaryMonitor() : nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(width, height, title.c_str(), fullscreen ? glfwGetPrimaryMonitor() : nullptr, nullptr);
     if (window == nullptr)
     {
         std::cout << "GLFW window creation failed!" << std::endl;
@@ -65,7 +65,7 @@ GLFWwindow *WindowHandler::CreateWindow(const int &width, const int &height, con
 
     glfwSwapInterval(0);
 
-    const GLFWvidmode *mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
     if (mode)
     {
         int x = (mode->width - width) / 2;

@@ -1,7 +1,7 @@
 #include <iostream>
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
 #include <Graphics/Texture.h>
+#include <stb_image.h>
 
 void Texture::LoadDefault()
 {
@@ -14,7 +14,7 @@ void Texture::LoadDefault()
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_FLOAT, data);
 }
 
-void Texture::Load(const GLenum &internalFormat, const std::string &path, const GLenum &format)
+void Texture::Load(const GLenum& internalFormat, const std::string& path, const GLenum& format)
 {
     assert(TextureId == 0);
 
@@ -28,7 +28,7 @@ void Texture::Load(const GLenum &internalFormat, const std::string &path, const 
 
     stbi_set_flip_vertically_on_load(true);
     int width, height, nrChannels;
-    unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+    unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
     if (data)
     {
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, data);

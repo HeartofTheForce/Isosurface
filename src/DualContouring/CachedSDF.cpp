@@ -1,6 +1,6 @@
 #include <DualContouring/CachedSDF.h>
 
-void CachedSDF::Measure(const glm::mat4 &localToWorld, const SDF &f)
+void CachedSDF::Measure(const glm::mat4& localToWorld, const SDF& f)
 {
     for (int z = 0; z < Index.SizeZ; z++)
     {

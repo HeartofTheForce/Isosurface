@@ -1,7 +1,7 @@
 #pragma once
-#include <memory>
 #include <glad/gl.h>
 #include <glm/glm.hpp>
+#include <memory>
 
 struct MeshGpu
 {
@@ -12,12 +12,12 @@ struct MeshGpu
     std::unique_ptr<GLuint[]> VboIds{nullptr};
     std::unique_ptr<GLuint[]> VboStrides{nullptr};
 
-    void LoadBuffer(const int &vboIndex, const void *data, const int &stride);
+    void LoadBuffer(const int& vboIndex, const void* data, const int& stride);
 
     MeshGpu() = default;
     ~MeshGpu();
-    MeshGpu(const MeshGpu &) = delete;
-    MeshGpu &operator=(const MeshGpu &) = delete;
-    MeshGpu(MeshGpu &&other);
-    MeshGpu &operator=(MeshGpu &&other);
+    MeshGpu(const MeshGpu&) = delete;
+    MeshGpu& operator=(const MeshGpu&) = delete;
+    MeshGpu(MeshGpu&& other);
+    MeshGpu& operator=(MeshGpu&& other);
 };

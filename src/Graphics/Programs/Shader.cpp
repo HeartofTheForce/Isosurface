@@ -1,50 +1,50 @@
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <glad/gl.h>
 #include <Graphics/Programs/Shader.h>
+#include <fstream>
+#include <glad/gl.h>
+#include <iostream>
+#include <sstream>
+#include <string>
 
 namespace
 {
-    GLint CheckShader(const GLuint &shaderId, const GLenum &target, const std::string &type, const std::string &message)
+GLint CheckShader(const GLuint& shaderId, const GLenum& target, const std::string& type, const std::string& message)
+{
+    GLint result;
+    glGetShaderiv(shaderId, target, &result);
+    if (result == GL_FALSE)
     {
-        GLint result;
-        glGetShaderiv(shaderId, target, &result);
-        if (result == GL_FALSE)
-        {
-            GLint maxLength = 0;
-            glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &maxLength);
+        GLint maxLength = 0;
+        glGetShaderiv(shaderId, GL_INFO_LOG_LENGTH, &maxLength);
 
-            GLchar infoLog[maxLength];
-            glGetShaderInfoLog(shaderId, maxLength, nullptr, infoLog);
+        GLchar infoLog[maxLength];
+        glGetShaderInfoLog(shaderId, maxLength, nullptr, infoLog);
 
-            std::cout << message << std::endl
-                      << type << std::endl
-                      << infoLog << std::endl;
-        }
-
-        return result;
+        std::cout << message << std::endl
+                  << type << std::endl
+                  << infoLog << std::endl;
     }
 
-    GLint CheckProgram(const GLuint &programId, const GLenum &target, const std::string &message)
+    return result;
+}
+
+GLint CheckProgram(const GLuint& programId, const GLenum& target, const std::string& message)
+{
+    GLint result;
+    glGetProgramiv(programId, target, &result);
+    if (result == GL_FALSE)
     {
-        GLint result;
-        glGetProgramiv(programId, target, &result);
-        if (result == GL_FALSE)
-        {
-            GLint maxLength = 0;
-            glGetProgramiv(programId, GL_INFO_LOG_LENGTH, &maxLength);
+        GLint maxLength = 0;
+        glGetProgramiv(programId, GL_INFO_LOG_LENGTH, &maxLength);
 
-            GLchar infoLog[maxLength];
-            glGetProgramInfoLog(programId, maxLength, nullptr, infoLog);
+        GLchar infoLog[maxLength];
+        glGetProgramInfoLog(programId, maxLength, nullptr, infoLog);
 
-            std::cout << message << std::endl
-                      << infoLog << std::endl;
-        }
-
-        return result;
+        std::cout << message << std::endl
+                  << infoLog << std::endl;
     }
+
+    return result;
+}
 } // namespace
 
 GLuint Shader::Compile() const
@@ -62,14 +62,14 @@ GLuint Shader::Compile() const
 
         shaderCode = shaderStream.str();
     }
-    catch (std::ifstream::failure &e)
+    catch (std::ifstream::failure& e)
     {
         std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
     }
 
     GLuint shaderId = glCreateShader(Type);
 
-    const GLchar *code[] = {shaderCode.c_str()};
+    const GLchar* code[] = {shaderCode.c_str()};
     const GLint length[] = {(GLint)shaderCode.length()};
 
     glShaderSource(shaderId, 1, code, length);

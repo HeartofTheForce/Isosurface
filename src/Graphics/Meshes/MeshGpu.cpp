@@ -1,6 +1,6 @@
 #include <Graphics/Meshes/MeshGpu.h>
 
-void MeshGpu::LoadBuffer(const int &vboIndex, const void *data, const int &stride)
+void MeshGpu::LoadBuffer(const int& vboIndex, const void* data, const int& stride)
 {
     assert(VboIds[vboIndex] == 0);
     assert(VboStrides[vboIndex] == 0);
@@ -20,12 +20,12 @@ MeshGpu::~MeshGpu()
     glDeleteBuffers(VboCount, VboIds.get());
 }
 
-MeshGpu::MeshGpu(MeshGpu &&other)
+MeshGpu::MeshGpu(MeshGpu&& other)
 {
     *this = std::move(other);
 }
 
-MeshGpu &MeshGpu::operator=(MeshGpu &&other)
+MeshGpu& MeshGpu::operator=(MeshGpu&& other)
 {
     VaoId = other.VaoId;
     other.VaoId = 0;

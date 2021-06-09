@@ -2,25 +2,25 @@
 
 namespace
 {
-    const Shader Shaders[] = {
-        Shader(GL_VERTEX_SHADER, "assets/shaders/Standard.vert"),
-        Shader(GL_FRAGMENT_SHADER, "assets/shaders/Standard.frag"),
-    };
+const Shader Shaders[] = {
+    Shader(GL_VERTEX_SHADER, "assets/shaders/Standard.vert"),
+    Shader(GL_FRAGMENT_SHADER, "assets/shaders/Standard.frag"),
+};
 
-    bool DefineLayout(const GLuint &layoutIndex, const GLint &layoutSize, const GLenum &type, const MeshGpu &meshGpu, const int &vboIndex)
+bool DefineLayout(const GLuint& layoutIndex, const GLint& layoutSize, const GLenum& type, const MeshGpu& meshGpu, const int& vboIndex)
+{
+    if (meshGpu.VboIds[vboIndex] != 0)
     {
-        if (meshGpu.VboIds[vboIndex] != 0)
-        {
-            glBindBuffer(GL_ARRAY_BUFFER, meshGpu.VboIds[vboIndex]);
-            glVertexAttribPointer(layoutIndex, layoutSize, type, GL_FALSE, meshGpu.VboStrides[vboIndex], (void *)0);
-            glEnableVertexAttribArray(layoutIndex);
+        glBindBuffer(GL_ARRAY_BUFFER, meshGpu.VboIds[vboIndex]);
+        glVertexAttribPointer(layoutIndex, layoutSize, type, GL_FALSE, meshGpu.VboStrides[vboIndex], (void*)0);
+        glEnableVertexAttribArray(layoutIndex);
 
-            return true;
-        }
-
-        glDisableVertexAttribArray(layoutIndex);
-        return false;
+        return true;
     }
+
+    glDisableVertexAttribArray(layoutIndex);
+    return false;
+}
 } // namespace
 
 void StandardProgram::Use()
@@ -30,11 +30,12 @@ void StandardProgram::Use()
     glUseProgram(ProgramId);
 }
 
-StandardProgram::StandardProgram() : Program(CompileProgram(Shaders, 2))
+StandardProgram::StandardProgram()
+    : Program(CompileProgram(Shaders, 2))
 {
 }
 
-void StandardProgram::GenerateVao(MeshGpu &meshGpu)
+void StandardProgram::GenerateVao(MeshGpu& meshGpu)
 {
     assert(meshGpu.VaoId == 0);
     assert(meshGpu.VboIds != nullptr);
@@ -54,7 +55,7 @@ void StandardProgram::GenerateVao(MeshGpu &meshGpu)
     }
 }
 
-void StandardProgram::Render(Camera &camera, const MeshGpu &meshGpu, const Light &light, const Material &material, Transform targets[], const int &targetCount)
+void StandardProgram::Render(Camera& camera, const MeshGpu& meshGpu, const Light& light, const Material& material, Transform targets[], const int& targetCount)
 {
     SetMatrix4("projectionMatrix", camera.GetProjectionMatrix());
     SetMatrix4("viewMatrix", camera.GetViewMatrix());

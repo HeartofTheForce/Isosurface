@@ -2,11 +2,11 @@
 
 namespace
 {
-    template <typename T>
-    void LoadBuffer(MeshGpu &meshGpu, int vboIndex, const T *data)
-    {
-        meshGpu.LoadBuffer(vboIndex, data, sizeof(T));
-    }
+template <typename T>
+void LoadBuffer(MeshGpu& meshGpu, int vboIndex, const T* data)
+{
+    meshGpu.LoadBuffer(vboIndex, data, sizeof(T));
+}
 } // namespace
 
 void MeshCpu::CalculateNormals()
@@ -34,7 +34,7 @@ const int MeshCpu::NormalVboIndex = 1;
 const int MeshCpu::TexCoordVboIndex = 2;
 const int MeshCpu::ColorVboIndex = 3;
 
-MeshGpu MeshCpu::LoadGpu(Program &program)
+MeshGpu MeshCpu::LoadGpu(Program& program)
 {
     assert(Vertices != nullptr);
 

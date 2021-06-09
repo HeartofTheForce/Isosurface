@@ -1,32 +1,32 @@
+#include <DualContouring/MeshGenerator.h>
 #include <algorithm>
 #include <omp.h>
-#include <DualContouring/MeshGenerator.h>
 
 #define EDGE_NO_SIGN_CHANGE -1
 #define EDGE_BORDER -2
 
 namespace
 {
-    glm::vec3 VertexInterp(const float &isoLevel, const glm::vec3 &p1, const glm::vec3 &p2, const float &valp1, const float &valp2)
-    {
-        if (abs(valp2 - valp1) < 0.00001)
-            return p1;
+glm::vec3 VertexInterp(const float& isoLevel, const glm::vec3& p1, const glm::vec3& p2, const float& valp1, const float& valp2)
+{
+    if (abs(valp2 - valp1) < 0.00001)
+        return p1;
 
-        float mu = (isoLevel - valp1) / (valp2 - valp1);
-        return p1 + (p2 - p1) * mu;
-    }
+    float mu = (isoLevel - valp1) / (valp2 - valp1);
+    return p1 + (p2 - p1) * mu;
+}
 
-    float NonZeroSign(float v)
-    {
-        float output = glm::sign(v);
-        if (output == 0)
-            return 1;
-        else
-            return output;
-    }
+float NonZeroSign(float v)
+{
+    float output = glm::sign(v);
+    if (output == 0)
+        return 1;
+    else
+        return output;
+}
 } // namespace
 
-MeshCpu MeshGenerator::BuildMesh(const int &totalVertices)
+MeshCpu MeshGenerator::BuildMesh(const int& totalVertices)
 {
     MeshCpu mesh = {};
     mesh.VertexCount = totalVertices;
@@ -42,7 +42,7 @@ MeshCpu MeshGenerator::BuildMesh(const int &totalVertices)
     return mesh;
 }
 
-void MeshGenerator::PopulateMesh(const int &index, MeshCpu &meshCpu)
+void MeshGenerator::PopulateMesh(const int& index, MeshCpu& meshCpu)
 {
     int x, y, z;
     Index.To3D(index, x, y, z);
@@ -139,7 +139,7 @@ void MeshGenerator::CalculateEdge(int index)
     CalculateEdgeZ(x, y, z, d0, p0);
 }
 
-void MeshGenerator::CalculateEdgeX(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0)
+void MeshGenerator::CalculateEdgeX(const int& x, const int& y, const int& z, const float& d0, const glm::vec3& p0)
 {
     if (x >= _edgeMapX.Index.SizeX)
         return;
@@ -174,7 +174,7 @@ void MeshGenerator::CalculateEdgeX(const int &x, const int &y, const int &z, con
     }
 }
 
-void MeshGenerator::CalculateEdgeY(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0)
+void MeshGenerator::CalculateEdgeY(const int& x, const int& y, const int& z, const float& d0, const glm::vec3& p0)
 {
     if (y >= _edgeMapY.Index.SizeY)
         return;
@@ -209,7 +209,7 @@ void MeshGenerator::CalculateEdgeY(const int &x, const int &y, const int &z, con
     }
 }
 
-void MeshGenerator::CalculateEdgeZ(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0)
+void MeshGenerator::CalculateEdgeZ(const int& x, const int& y, const int& z, const float& d0, const glm::vec3& p0)
 {
     if (z >= _edgeMapZ.Index.SizeZ)
         return;
@@ -272,7 +272,7 @@ void MeshGenerator::CalculateVertex(int index)
     _cubeVertices[index] = sum / (float)cnt;
 }
 
-void MeshGenerator::AggregateEdge(const EdgeMap &edgeMap, const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt)
+void MeshGenerator::AggregateEdge(const EdgeMap& edgeMap, const int& x, const int& y, const int& z, glm::vec3& sum, int& cnt)
 {
     int iX = edgeMap.Index.To1D(x, y, z);
     if (edgeMap.IndexOffset[iX] != EDGE_NO_SIGN_CHANGE)

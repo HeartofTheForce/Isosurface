@@ -8,17 +8,19 @@ struct IndexMap
     const int TotalSize;
 
     IndexMap(
-        const int &sizeX,
-        const int &sizeY,
-        const int &sizeZ)
+        const int& sizeX,
+        const int& sizeY,
+        const int& sizeZ)
         : SizeX(sizeX),
           SizeY(sizeY),
           SizeZ(sizeZ),
-          TotalSize(SizeX * SizeY * SizeZ) {}
+          TotalSize(SizeX * SizeY * SizeZ)
+    {
+    }
 
     inline void To3D(
         int idx,
-        int &x, int &y, int &z) const
+        int& x, int& y, int& z) const
     {
         z = idx / (SizeX * SizeY);
         idx -= z * SizeX * SizeY;
@@ -26,7 +28,7 @@ struct IndexMap
         x = idx % SizeX;
     }
 
-    inline int To1D(const int &x, const int &y, const int &z) const
+    inline int To1D(const int& x, const int& y, const int& z) const
     {
         return (z * SizeX * SizeY) + (y * SizeX) + x;
     }

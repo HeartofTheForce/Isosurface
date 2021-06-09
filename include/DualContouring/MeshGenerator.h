@@ -18,16 +18,16 @@ class MeshGenerator
 
     int _counter{0};
 
-    MeshCpu BuildMesh(const int &totalVertices);
-    inline void PopulateMesh(const int &index, MeshCpu &meshCpu);
+    MeshCpu BuildMesh(const int& totalVertices);
+    inline void PopulateMesh(const int& index, MeshCpu& meshCpu);
     inline void CalculateEdge(int index);
-    inline void CalculateEdgeX(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0);
-    inline void CalculateEdgeY(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0);
-    inline void CalculateEdgeZ(const int &x, const int &y, const int &z, const float &d0, const glm::vec3 &p0);
+    inline void CalculateEdgeX(const int& x, const int& y, const int& z, const float& d0, const glm::vec3& p0);
+    inline void CalculateEdgeY(const int& x, const int& y, const int& z, const float& d0, const glm::vec3& p0);
+    inline void CalculateEdgeZ(const int& x, const int& y, const int& z, const float& d0, const glm::vec3& p0);
     inline void CalculateVertex(int index);
-    inline void AggregateEdge(const EdgeMap &edgeMap, const int &x, const int &y, const int &z, glm::vec3 &sum, int &cnt);
+    inline void AggregateEdge(const EdgeMap& edgeMap, const int& x, const int& y, const int& z, glm::vec3& sum, int& cnt);
 
-public:
+  public:
     MeshCpu GenerateMesh();
 
     MeshGenerator(std::shared_ptr<CachedSDF> cachedSDF)
@@ -37,5 +37,7 @@ public:
           _edgeMapY(EdgeMap{_cachedSDF->Index.SizeX, Index.SizeY, _cachedSDF->Index.SizeZ}),
           _edgeMapZ(EdgeMap{_cachedSDF->Index.SizeX, _cachedSDF->Index.SizeY, Index.SizeZ}),
           _cubeCheck(std::unique_ptr<bool[]>(new bool[Index.TotalSize])),
-          _cubeVertices(std::unique_ptr<glm::vec3[]>(new glm::vec3[Index.TotalSize])) {}
+          _cubeVertices(std::unique_ptr<glm::vec3[]>(new glm::vec3[Index.TotalSize]))
+    {
+    }
 };
