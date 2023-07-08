@@ -16,16 +16,15 @@ glm::uvec3 offsets[8] = {
 
 MeshCpu MeshGenerator::GenerateMesh()
 {
-    MeshData root = {};
+    MeshData buffer0 = {};
 #pragma omp parallel
     {
+#pragma omp for schedule(auto)
         for (glm::uint x = 0; x < _index.Size.x; x++)
         {
-
-#pragma omp for nowait
+            MeshData buffer1 = {};
             for (glm::uint y = 0; y < _index.Size.y; y++)
             {
-                MeshData buffer = {};
                 for (glm::uint z = 0; z < _index.Size.z; z++)
                 {
                     auto coord = glm::uvec3(x, y, z);
@@ -45,23 +44,21 @@ MeshCpu MeshGenerator::GenerateMesh()
                         cube
                     );
 
-                    auto index = _index.Encode(coord);
-
                     if (meshData.has_value())
-                        MeshData::Merge(buffer, meshData.value());
+                        MeshData::Merge(buffer1, meshData.value());
                 }
+            }
 
 #pragma omp critical
-                MeshData::Merge(root, buffer);
-            }
+            MeshData::Merge(buffer0, buffer1);
         }
     }
 
     MeshCpu mesh = {};
-    mesh.VertexCount = root.vertices.size();
+    mesh.VertexCount = buffer0.vertices.size();
 
     mesh.Vertices = std::unique_ptr<glm::vec3[]>(new glm::vec3[mesh.VertexCount]);
-    std::copy(root.vertices.begin(), root.vertices.end(), mesh.Vertices.get());
+    std::copy(buffer0.vertices.begin(), buffer0.vertices.end(), mesh.Vertices.get());
 
     mesh.CalculateNormals();
 
