@@ -1,5 +1,5 @@
-#include <DualContouring/CachedSDF.h>
-#include <DualContouring/MeshGenerator.h>
+#include <Isosurface/CachedSDF.h>
+#include <Isosurface/DualContouring/MeshGenerator.h>
 #include <Graphics/Camera.h>
 #include <Graphics/Programs/StandardProgram.h>
 #include <PerlinNoise.hpp>
@@ -54,17 +54,19 @@ float Noise(glm::vec3 p)
 
 void Demo()
 {
-    const int Size = 512;
+    const int Size = 256;
     const float Extent = Size * 0.4f;
     const float Offset = (Size - 1) * 0.5f;
 
+    // auto shape = Noise;
+    // auto shape = Translate(
+    //     glm::vec3(Offset, Offset, Offset),
+    //     Sphere(Extent));
     auto shape = Translate(
         glm::vec3(Offset, Offset, Offset),
-        Box(glm::vec3(Extent, Extent, Extent)) //
-        // Sphere(Extent) //
-    );
+        Box(glm::vec3(Extent, Extent, Extent)));
 
-    GLFWwindow *window = WindowHandler::Instance().CreateWindow(WIDTH, HEIGHT, FULLSCREEN, "Test Title");
+    GLFWwindow* window = WindowHandler::Instance().CreateWindow(WIDTH, HEIGHT, FULLSCREEN, "Test Title");
     InputHandler inputHandler = {window};
 
     StandardProgram standardProgram = {};
@@ -88,8 +90,13 @@ void Demo()
         glm::vec2 mouseDelta = inputHandler.GetMouseDelta();
         camera.Update(5.0f * inputHandler.DeltaTime, moveDirection, 0.75f, mouseDelta);
 
+        auto start = std::chrono::high_resolution_clock::now();
         MeshCpu generatedCpu = meshGenerator.GenerateMesh();
         MeshGpu generatedGpu = generatedCpu.LoadGpu(standardProgram);
+        auto stop = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+        std::cout << duration.count() << std::endl;
+
         Transform generatedTransform = {};
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

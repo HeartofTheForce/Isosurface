@@ -1,5 +1,5 @@
 #pragma once
-#include <DualContouring/IndexMap.h>
+#include <Isosurface/DualContouring/IndexMap.h>
 #include <functional>
 #include <glm/glm.hpp>
 #include <memory>

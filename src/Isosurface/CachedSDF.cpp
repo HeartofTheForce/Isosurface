@@ -1,4 +1,4 @@
-#include <DualContouring/CachedSDF.h>
+#include <Isosurface/CachedSDF.h>
 
 void CachedSDF::Measure(const glm::mat4& localToWorld, const SDF& f)
 {

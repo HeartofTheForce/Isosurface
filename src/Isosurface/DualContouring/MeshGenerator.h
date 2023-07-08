@@ -1,6 +1,6 @@
 #pragma once
-#include <DualContouring/CachedSDF.h>
-#include <DualContouring/Edge.h>
+#include <Isosurface/CachedSDF.h>
+#include <Isosurface/DualContouring/Edge.h>
 #include <Graphics/Meshes/MeshCpu.h>
 
 class MeshGenerator

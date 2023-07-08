@@ -1,30 +1,10 @@
-#include <DualContouring/MeshGenerator.h>
+#include <Isosurface/Common.h>
+#include <Isosurface/DualContouring/MeshGenerator.h>
 #include <algorithm>
 #include <omp.h>
 
 #define EDGE_NO_SIGN_CHANGE -1
 #define EDGE_BORDER -2
-
-namespace
-{
-glm::vec3 VertexInterp(const float& isoLevel, const glm::vec3& p1, const glm::vec3& p2, const float& valp1, const float& valp2)
-{
-    if (abs(valp2 - valp1) < 0.00001)
-        return p1;
-
-    float mu = (isoLevel - valp1) / (valp2 - valp1);
-    return p1 + (p2 - p1) * mu;
-}
-
-float NonZeroSign(float v)
-{
-    float output = glm::sign(v);
-    if (output == 0)
-        return 1;
-    else
-        return output;
-}
-} // namespace
 
 MeshCpu MeshGenerator::BuildMesh(const int& totalVertices)
 {
