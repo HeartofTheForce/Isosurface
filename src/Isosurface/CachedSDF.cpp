@@ -2,13 +2,13 @@
 
 void CachedSDF::Measure(const glm::mat4& localToWorld, const SDF& f)
 {
-    for (int z = 0; z < Index.Size.z; z++)
+    for (glm::uint z = 0; z < Index.Size.z; z++)
     {
-        for (int y = 0; y < Index.Size.y; y++)
+        for (glm::uint y = 0; y < Index.Size.y; y++)
         {
-            for (int x = 0; x < Index.Size.x; x++)
+            for (glm::uint x = 0; x < Index.Size.x; x++)
             {
-                int index = Index.Encode(glm::ivec3(x, y, z));
+                int index = Index.Encode(glm::uvec3(x, y, z));
                 glm::vec3 p = localToWorld * glm::vec4(x, y, z, 1.0f);
 
                 if (x == 0 || x == Index.Size.x - 1 ||

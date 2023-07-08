@@ -3,20 +3,20 @@
 
 struct IndexMap
 {
-    const glm::ivec3 Size;
+    const glm::uvec3 Size;
     const int TotalSize;
 
     IndexMap(
-        glm::ivec3 size)
+        glm::uvec3 size)
         : Size(size),
           TotalSize(Size.x * Size.y * Size.z)
     {
     }
 
-    inline glm::ivec3 Decode(int index)
+    inline glm::uvec3 Decode(int index)
         const
     {
-        glm::ivec3 coord;
+        glm::uvec3 coord;
 
         coord.z = index / (Size.x * Size.y);
         index -= coord.z * Size.x * Size.y;
@@ -26,7 +26,7 @@ struct IndexMap
         return coord;
     }
 
-    inline int Encode(const glm::ivec3& coord) const
+    inline int Encode(const glm::uvec3& coord) const
     {
         return (coord.z * Size.x * Size.y) + (coord.y * Size.x) + coord.x;
     }

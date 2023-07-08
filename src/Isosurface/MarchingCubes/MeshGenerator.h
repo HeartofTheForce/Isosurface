@@ -46,7 +46,7 @@ class MeshGenerator
 
     MeshGenerator(std::shared_ptr<CachedSDF> cachedSDF)
         : _cachedSDF(cachedSDF),
-          _index(this->_cachedSDF->Index.Size - glm::ivec3(1)),
+          _index(this->_cachedSDF->Index.Size - glm::uvec3(1)),
           _meshDatas(std::unique_ptr<std::optional<MeshData>[]>(new std::optional<MeshData>[_index.TotalSize]))
     {
     }
