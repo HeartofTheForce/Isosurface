@@ -1,6 +1,8 @@
 #pragma once
 #include <glm/glm.hpp>
 
+namespace
+{
 glm::vec3 VertexInterp(const float& isoLevel, const glm::vec3& p1, const glm::vec3& p2, const float& valp1, const float& valp2)
 {
     if (abs(valp2 - valp1) < 0.00001)
@@ -18,3 +20,4 @@ float NonZeroSign(float v)
     else
         return output;
 }
+} // namespace

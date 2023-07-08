@@ -14,10 +14,10 @@ void CachedSDF::Measure(const glm::mat4& localToWorld, const SDF& f)
                 if (x == 0 || x == Index.Size.x - 1 ||
                     y == 0 || y == Index.Size.y - 1 ||
                     z == 0 || z == Index.Size.z - 1)
-                    CachedDistances[index] = 0;
+                    Distances[index] = 0;
                 else
-                    CachedDistances[index] = f(p);
-                CachedPositions[index] = p;
+                    Distances[index] = f(p);
+                Positions[index] = p;
             }
         }
     }

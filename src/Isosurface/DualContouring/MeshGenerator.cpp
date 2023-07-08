@@ -1,4 +1,3 @@
-#include <Isosurface/Common.h>
 #include <Isosurface/DualContouring/MeshGenerator.h>
 #include <algorithm>
 #include <omp.h>
@@ -22,13 +21,7 @@ MeshCpu MeshGenerator::BuildMesh(const int& totalVertices)
     return mesh;
 }
 
-void MeshGenerator::PushEdge(MeshCpu& meshCpu,
-                             const int& offset,
-                             const float& dir,
-                             const glm::ivec3& shared0,
-                             const glm::ivec3& shared1,
-                             const glm::ivec3& unique0,
-                             const glm::ivec3& unique1)
+void MeshGenerator::PushEdge(MeshCpu& meshCpu, const int& offset, const float& dir, const glm::ivec3& shared0, const glm::ivec3& shared1, const glm::ivec3& unique0, const glm::ivec3& unique1)
 {
     if (dir == 1)
     {
@@ -98,8 +91,8 @@ void MeshGenerator::PopulateMesh(const int& index, MeshCpu& meshCpu)
 
 void MeshGenerator::CalculateEdge(int index)
 {
-    float d0 = _cachedSDF->CachedDistances[index];
-    glm::vec3 p0 = _cachedSDF->CachedPositions[index];
+    float d0 = _cachedSDF->Distances[index];
+    glm::vec3 p0 = _cachedSDF->Positions[index];
     glm::ivec3 coord = _cachedSDF->Index.Decode(index);
 
     CalculateEdgeX(coord, d0, p0);
