@@ -23,7 +23,7 @@ include_directories(SYSTEM
     external/stb/include
     external/PerlinNoise/include
 )
-include_directories(include)
+include_directories(src)
 
 add_compile_definitions(GLM_FORCE_LEFT_HANDED GLM_FORCE_XYZW_ONLY)
 
