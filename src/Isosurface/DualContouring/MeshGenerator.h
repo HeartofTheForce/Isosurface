@@ -4,6 +4,8 @@
 #include <Isosurface/Common.h>
 #include <Isosurface/DualContouring/Edge.h>
 
+namespace DualContouring
+{
 class MeshGenerator
 {
     const std::shared_ptr<CachedSDF> _cachedSDF;
@@ -56,3 +58,4 @@ class MeshGenerator
     {
     }
 };
+}

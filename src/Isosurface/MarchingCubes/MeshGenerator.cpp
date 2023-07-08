@@ -3,6 +3,8 @@
 #include <Isosurface/MarchingCubes/Lookup.h>
 #include <Isosurface/MarchingCubes/MeshGenerator.h>
 
+namespace MarchingCubes
+{
 glm::uvec3 offsets[8] = {
     glm::uvec3(0, 0, 0),
     glm::uvec3(1, 0, 0),
@@ -153,3 +155,4 @@ std::optional<MeshData> MeshGenerator::Polygonize(float isolevel, int cube[8])
 
     return std::optional(meshData);
 }
+} // namespace

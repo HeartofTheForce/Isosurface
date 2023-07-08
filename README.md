@@ -1,6 +1,9 @@
 # Isosurface
 
-A highly optimized C++ OpenGL implementation of the Dual Contouring Isosurface extraction algorithm, designed to operate on uniform grids in parallel.
+Highly optimized C++ OpenGL implementations of Isosurface extraction algorithms, designed to operate on uniform grids in parallel.
+
+- Dual Contouring
+- Marching Cubes
 
 # Built using
 

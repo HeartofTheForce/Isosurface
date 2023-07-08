@@ -1,13 +1,15 @@
 #include <Graphics/Camera.h>
 #include <Graphics/Programs/StandardProgram.h>
 #include <Isosurface/CachedSDF.h>
-// #include <Isosurface/DualContouring/MeshGenerator.h>
+#include <Isosurface/DualContouring/MeshGenerator.h>
 #include <Isosurface/MarchingCubes/MeshGenerator.h>
 #include <PerlinNoise.hpp>
 #include <Utility/InputHandler.h>
 #include <Utility/WindowHandler.h>
 #include <chrono>
 #include <glm/glm.hpp>
+
+using namespace MarchingCubes;
 
 #define FULLSCREEN true
 
@@ -55,7 +57,7 @@ float Noise(glm::vec3 p)
 
 void Demo()
 {
-    const int Size = 256;
+    const int Size = 512;
     const float Extent = Size * 0.4f;
     const float Offset = (Size - 1) * 0.5f;
 

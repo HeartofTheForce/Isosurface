@@ -4,6 +4,8 @@
 #include <Isosurface/Common.h>
 #include <optional>
 
+namespace MarchingCubes
+{
 class MeshData
 {
   public:
@@ -49,3 +51,4 @@ class MeshGenerator
     {
     }
 };
+}
