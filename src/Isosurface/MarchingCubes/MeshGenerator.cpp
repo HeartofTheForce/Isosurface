@@ -5,46 +5,54 @@
 
 MeshCpu MeshGenerator::GenerateMesh()
 {
-    auto meshDatas = std::unique_ptr<std::optional<MeshData>[]>(new std::optional<MeshData>[Index.TotalSize]);
+    std::fill(_meshDatas.get(), _meshDatas.get() + _index.TotalSize, std::nullopt);
 
-#pragma omp parallel
+    glm::ivec3 offsets[8] = {
+        glm::ivec3(0, 0, 0),
+        glm::ivec3(1, 0, 0),
+        glm::ivec3(1, 0, 1),
+        glm::ivec3(0, 0, 1),
+        glm::ivec3(0, 1, 0),
+        glm::ivec3(1, 1, 0),
+        glm::ivec3(1, 1, 1),
+        glm::ivec3(0, 1, 1),
+    };
+
+#pragma omp parallel for schedule(auto)
+    for (int x = 0; x < _index.Size.x; x++)
     {
-#pragma omp for schedule(auto)
-        for (int x = 0; x < Index.Size.x; x++)
+        for (int y = 0; y < _index.Size.y; y++)
         {
-            for (int y = 0; y < Index.Size.y; y++)
+            for (int z = 0; z < _index.Size.z; z++)
             {
-                for (int z = 0; z < Index.Size.z; z++)
-                {
-                    auto coord = glm::ivec3(x, y, z);
+                auto coord = glm::ivec3(x, y, z);
 
-                    int cube[8] = {
-                        _cachedSDF->Index.Encode(coord + glm::ivec3(0, 0, 0)),
-                        _cachedSDF->Index.Encode(coord + glm::ivec3(1, 0, 0)),
-                        _cachedSDF->Index.Encode(coord + glm::ivec3(1, 0, 1)),
-                        _cachedSDF->Index.Encode(coord + glm::ivec3(0, 0, 1)),
-                        _cachedSDF->Index.Encode(coord + glm::ivec3(0, 1, 0)),
-                        _cachedSDF->Index.Encode(coord + glm::ivec3(1, 1, 0)),
-                        _cachedSDF->Index.Encode(coord + glm::ivec3(1, 1, 1)),
-                        _cachedSDF->Index.Encode(coord + glm::ivec3(0, 1, 1)),
-                    };
-                    auto meshData = Polygonize(
-                        0.0,
-                        cube
-                    );
-                    auto index = Index.Encode(coord);
+                int cube[8] = {
+                    _cachedSDF->Index.Encode(coord + offsets[0]),
+                    _cachedSDF->Index.Encode(coord + offsets[1]),
+                    _cachedSDF->Index.Encode(coord + offsets[2]),
+                    _cachedSDF->Index.Encode(coord + offsets[3]),
+                    _cachedSDF->Index.Encode(coord + offsets[4]),
+                    _cachedSDF->Index.Encode(coord + offsets[5]),
+                    _cachedSDF->Index.Encode(coord + offsets[6]),
+                    _cachedSDF->Index.Encode(coord + offsets[7]),
+                };
+                auto meshData = Polygonize(
+                    0.0,
+                    cube
+                );
+                auto index = _index.Encode(coord);
 
-                    meshDatas[index] = meshData;
-                }
+                _meshDatas[index] = meshData;
             }
         }
     }
 
     MeshData root = {};
-    for (int i = 0; i < Index.TotalSize; i++)
+    for (int i = 0; i < _index.TotalSize; i++)
     {
-        if (meshDatas[i].has_value())
-            MeshData::Merge(root, meshDatas[i].value());
+        if (_meshDatas[i].has_value())
+            MeshData::Merge(root, _meshDatas[i].value());
     }
 
     MeshCpu mesh = {};

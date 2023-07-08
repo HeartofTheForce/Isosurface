@@ -35,8 +35,8 @@ class MeshData
 class MeshGenerator
 {
     const std::shared_ptr<CachedSDF> _cachedSDF;
-
-    const IndexMap Index;
+    const IndexMap _index;
+    const std::shared_ptr<std::optional<MeshData>[]> _meshDatas;
 
     MeshCpu BuildMesh(const int& totalVertices);
     std::optional<MeshData> Polygonize(float isolevel, int cube[8]);
@@ -45,7 +45,9 @@ class MeshGenerator
     MeshCpu GenerateMesh();
 
     MeshGenerator(std::shared_ptr<CachedSDF> cachedSDF)
-        : _cachedSDF(cachedSDF), Index(this->_cachedSDF->Index.Size - glm::ivec3(1))
+        : _cachedSDF(cachedSDF),
+          _index(this->_cachedSDF->Index.Size - glm::ivec3(1)),
+          _meshDatas(std::unique_ptr<std::optional<MeshData>[]>(new std::optional<MeshData>[_index.TotalSize]))
     {
     }
 };
