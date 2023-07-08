@@ -4,10 +4,11 @@
 struct IndexMap
 {
     const glm::uvec3 Size;
-    const int TotalSize;
+    const glm::uint TotalSize;
 
     IndexMap(
-        glm::uvec3 size)
+        glm::uvec3 size
+    )
         : Size(size),
           TotalSize(Size.x * Size.y * Size.z)
     {

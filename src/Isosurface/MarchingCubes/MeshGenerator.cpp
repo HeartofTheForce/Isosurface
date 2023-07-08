@@ -19,39 +19,33 @@ MeshCpu MeshGenerator::GenerateMesh()
     MeshData buffer0 = {};
 #pragma omp parallel
     {
-#pragma omp for schedule(auto)
-        for (glm::uint x = 0; x < _index.Size.x; x++)
+        MeshData buffer1 = {};
+#pragma omp for nowait
+        for (glm::uint i = 0; i < _index.TotalSize; i++)
         {
-            MeshData buffer1 = {};
-            for (glm::uint y = 0; y < _index.Size.y; y++)
-            {
-                for (glm::uint z = 0; z < _index.Size.z; z++)
-                {
-                    auto coord = glm::uvec3(x, y, z);
+            auto coord = _index.Decode(i);
 
-                    int cube[8] = {
-                        _cachedSDF->Index.Encode(coord + offsets[0]),
-                        _cachedSDF->Index.Encode(coord + offsets[1]),
-                        _cachedSDF->Index.Encode(coord + offsets[2]),
-                        _cachedSDF->Index.Encode(coord + offsets[3]),
-                        _cachedSDF->Index.Encode(coord + offsets[4]),
-                        _cachedSDF->Index.Encode(coord + offsets[5]),
-                        _cachedSDF->Index.Encode(coord + offsets[6]),
-                        _cachedSDF->Index.Encode(coord + offsets[7]),
-                    };
-                    auto meshData = Polygonize(
-                        0.0,
-                        cube
-                    );
+            int cube[8] = {
+                _cachedSDF->Index.Encode(coord + offsets[0]),
+                _cachedSDF->Index.Encode(coord + offsets[1]),
+                _cachedSDF->Index.Encode(coord + offsets[2]),
+                _cachedSDF->Index.Encode(coord + offsets[3]),
+                _cachedSDF->Index.Encode(coord + offsets[4]),
+                _cachedSDF->Index.Encode(coord + offsets[5]),
+                _cachedSDF->Index.Encode(coord + offsets[6]),
+                _cachedSDF->Index.Encode(coord + offsets[7]),
+            };
+            auto meshData = Polygonize(
+                0.0,
+                cube
+            );
 
-                    if (meshData.has_value())
-                        MeshData::Merge(buffer1, meshData.value());
-                }
-            }
+            if (meshData.has_value())
+                MeshData::Merge(buffer1, meshData.value());
+        }
 
 #pragma omp critical
-            MeshData::Merge(buffer0, buffer1);
-        }
+        MeshData::Merge(buffer0, buffer1);
     }
 
     MeshCpu mesh = {};
