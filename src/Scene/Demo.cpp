@@ -1,8 +1,8 @@
 #include <Graphics/Camera.h>
 #include <Graphics/Programs/StandardProgram.h>
 #include <Isosurface/CachedSDF.h>
-#include <Isosurface/DualContouring/MeshGenerator.h>
-// #include <Isosurface/MarchingCubes/MeshGenerator.h>
+// #include <Isosurface/DualContouring/MeshGenerator.h>
+#include <Isosurface/MarchingCubes/MeshGenerator.h>
 #include <PerlinNoise.hpp>
 #include <Utility/InputHandler.h>
 #include <Utility/WindowHandler.h>
