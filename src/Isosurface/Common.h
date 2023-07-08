@@ -3,7 +3,7 @@
 
 namespace
 {
-glm::vec3 VertexInterp(const float& isoLevel, const glm::vec3& p1, const glm::vec3& p2, const float& valp1, const float& valp2)
+inline glm::vec3 VertexInterp(const float& isoLevel, const glm::vec3& p1, const glm::vec3& p2, const float& valp1, const float& valp2)
 {
     if (abs(valp2 - valp1) < 0.00001)
         return p1;
@@ -12,7 +12,7 @@ glm::vec3 VertexInterp(const float& isoLevel, const glm::vec3& p1, const glm::ve
     return p1 + (p2 - p1) * mu;
 }
 
-float NonZeroSign(float v)
+inline float NonZeroSign(float v)
 {
     float output = glm::sign(v);
     if (output == 0)

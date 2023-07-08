@@ -41,8 +41,8 @@ MeshCpu MeshGenerator::GenerateMesh()
                     0.0,
                     cube
                 );
-                auto index = _index.Encode(coord);
 
+                auto index = _index.Encode(coord);
                 _meshDatas[index] = meshData;
             }
         }
@@ -151,13 +151,11 @@ std::optional<MeshData> MeshGenerator::Polygonize(float isolevel, int cube[8])
 
     MeshData meshData = {16};
 
-    int ntriang = 0;
     for (int i = 0; triTable[cubeindex][i] != -1; i += 3)
     {
         meshData.vertices.push_back(vertlist[triTable[cubeindex][i + 2]]);
         meshData.vertices.push_back(vertlist[triTable[cubeindex][i + 1]]);
         meshData.vertices.push_back(vertlist[triTable[cubeindex][i]]);
-        ntriang++;
     }
 
     return std::optional(meshData);

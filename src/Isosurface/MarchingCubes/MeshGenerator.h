@@ -39,7 +39,7 @@ class MeshGenerator
     const std::shared_ptr<std::optional<MeshData>[]> _meshDatas;
 
     MeshCpu BuildMesh(const int& totalVertices);
-    std::optional<MeshData> Polygonize(float isolevel, int cube[8]);
+    inline std::optional<MeshData> Polygonize(float isolevel, int cube[8]);
 
   public:
     MeshCpu GenerateMesh();

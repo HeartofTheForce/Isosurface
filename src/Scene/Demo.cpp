@@ -64,8 +64,9 @@ void Demo()
     //     glm::vec3(Offset, Offset, Offset),
     //     Sphere(Extent));
     auto shape = Translate(
-        glm::vec3(Offset, Offset, Offset),
-        Box(glm::vec3(Extent, Extent, Extent)));
+        glm::vec3(Offset),
+        Box(glm::vec3(Extent))
+    );
 
     GLFWwindow* window = WindowHandler::Instance().CreateWindow(WIDTH, HEIGHT, FULLSCREEN, "Test Title");
     InputHandler inputHandler = {window};
