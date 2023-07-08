@@ -1,35 +1,33 @@
 #pragma once
+#include <glm/glm.hpp>
 
 struct IndexMap
 {
-    const int SizeX;
-    const int SizeY;
-    const int SizeZ;
+    const glm::ivec3 Size;
     const int TotalSize;
 
     IndexMap(
-        const int& sizeX,
-        const int& sizeY,
-        const int& sizeZ)
-        : SizeX(sizeX),
-          SizeY(sizeY),
-          SizeZ(sizeZ),
-          TotalSize(SizeX * SizeY * SizeZ)
+        glm::ivec3 size)
+        : Size(size),
+          TotalSize(Size.x * Size.y * Size.z)
     {
     }
 
-    inline void Decode(
-        int idx,
-        int& x, int& y, int& z) const
+    inline glm::ivec3 Decode(int index)
+        const
     {
-        z = idx / (SizeX * SizeY);
-        idx -= z * SizeX * SizeY;
-        y = idx / SizeX;
-        x = idx % SizeX;
+        glm::ivec3 coord;
+
+        coord.z = index / (Size.x * Size.y);
+        index -= coord.z * Size.x * Size.y;
+        coord.y = index / Size.x;
+        coord.x = index % Size.x;
+
+        return coord;
     }
 
-    inline int Encode(const int& x, const int& y, const int& z) const
+    inline int Encode(const glm::ivec3& coord) const
     {
-        return (z * SizeX * SizeY) + (y * SizeX) + x;
+        return (coord.z * Size.x * Size.y) + (coord.y * Size.x) + coord.x;
     }
 };

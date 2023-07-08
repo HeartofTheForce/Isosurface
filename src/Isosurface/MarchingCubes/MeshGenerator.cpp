@@ -3,10 +3,11 @@
 #include <Isosurface/CachedSDF.h>
 #include <Isosurface/MarchingCubes/MeshGenerator.h>
 
+typedef glm::vec<3, int> ivec3;
+
 MeshCpu MeshGenerator::GenerateMesh()
 {
-  int cnt = 0;
-
+    auto meshDatas = std::unique_ptr<bool[]>(new bool[Index.TotalSize]);
 }
 
 int edgeTable[256] = {

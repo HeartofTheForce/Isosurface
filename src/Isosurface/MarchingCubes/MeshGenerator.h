@@ -9,12 +9,34 @@ class MeshGenerator
     const IndexMap Index;
 
     MeshCpu BuildMesh(const int& totalVertices);
+
   public:
     MeshCpu GenerateMesh();
 
     MeshGenerator(std::shared_ptr<CachedSDF> cachedSDF)
         : _cachedSDF(cachedSDF),
-          Index(_cachedSDF->Index.SizeX - 1, _cachedSDF->Index.SizeY - 1, _cachedSDF->Index.SizeZ - 1)
+          Index(this->_cachedSDF->Index.Size - glm::ivec3(1))
     {
+    }
+};
+
+class MeshData
+{
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec3> normals;
+
+    MeshData()
+    {
+        this->vertices = std::vector<glm::vec3>();
+        this->normals = std::vector<glm::vec3>();
+    }
+
+    MeshData(int capacity)
+    {
+        this->vertices = std::vector<glm::vec3>();
+        this->normals = std::vector<glm::vec3>();
+
+        this->vertices.reserve(capacity);
+        this->normals.reserve(capacity);
     }
 };

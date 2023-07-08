@@ -1,7 +1,7 @@
-#include <Isosurface/CachedSDF.h>
-#include <Isosurface/DualContouring/MeshGenerator.h>
 #include <Graphics/Camera.h>
 #include <Graphics/Programs/StandardProgram.h>
+#include <Isosurface/CachedSDF.h>
+#include <Isosurface/DualContouring/MeshGenerator.h>
 #include <PerlinNoise.hpp>
 #include <Utility/InputHandler.h>
 #include <Utility/WindowHandler.h>
@@ -78,7 +78,7 @@ void Demo()
     Material cubeMaterial = {};
     cubeMaterial.Diffuse = glm::vec3(1.0f);
 
-    std::shared_ptr<CachedSDF> cachedSDF = std::shared_ptr<CachedSDF>(new CachedSDF{Size, Size, Size});
+    std::shared_ptr<CachedSDF> cachedSDF = std::shared_ptr<CachedSDF>(new CachedSDF{glm::ivec3(Size)});
     cachedSDF->Measure(glm::mat4(1.0f), shape);
     MeshGenerator meshGenerator = {cachedSDF};
 

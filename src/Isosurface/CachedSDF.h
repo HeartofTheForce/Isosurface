@@ -14,19 +14,17 @@ struct CachedSDF
     const std::unique_ptr<glm::vec3[]> CachedPositions;
 
     void Measure(const glm::mat4& localToWorld, const SDF& f);
-    inline void Get(const int& x, const int& y, const int& z, float& distance, glm::vec3& position) const
+    inline void Get(const glm::ivec3& coord, float& distance, glm::vec3& position) const
     {
-        int index = Index.Encode(x, y, z);
+        int index = Index.Encode(coord);
 
         distance = CachedDistances[index];
         position = CachedPositions[index];
     }
 
     CachedSDF(
-        const int& sizeX,
-        const int& sizeY,
-        const int& sizeZ)
-        : Index(sizeX, sizeY, sizeZ),
+        const glm::ivec3& size)
+        : Index(size),
           CachedDistances(std::unique_ptr<float[]>(new float[Index.TotalSize])),
           CachedPositions(std::unique_ptr<glm::vec3[]>(new glm::vec3[Index.TotalSize]))
     {

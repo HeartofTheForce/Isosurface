@@ -22,87 +22,77 @@ MeshCpu MeshGenerator::BuildMesh(const int& totalVertices)
     return mesh;
 }
 
+void MeshGenerator::PushEdge(MeshCpu& meshCpu,
+                             const int& offset,
+                             const float& dir,
+                             const glm::ivec3& shared0,
+                             const glm::ivec3& shared1,
+                             const glm::ivec3& unique0,
+                             const glm::ivec3& unique1)
+{
+    if (dir == 1)
+    {
+        meshCpu.Vertices[offset + 0] = _cubeVertices[Index.Encode(shared0)];
+        meshCpu.Vertices[offset + 1] = _cubeVertices[Index.Encode(shared1)];
+        meshCpu.Vertices[offset + 2] = _cubeVertices[Index.Encode(unique0)];
+
+        meshCpu.Vertices[offset + 3] = _cubeVertices[Index.Encode(shared1)];
+        meshCpu.Vertices[offset + 4] = _cubeVertices[Index.Encode(shared0)];
+        meshCpu.Vertices[offset + 5] = _cubeVertices[Index.Encode(unique1)];
+    }
+    else
+    {
+        meshCpu.Vertices[offset + 5] = _cubeVertices[Index.Encode(shared0)];
+        meshCpu.Vertices[offset + 4] = _cubeVertices[Index.Encode(shared1)];
+        meshCpu.Vertices[offset + 3] = _cubeVertices[Index.Encode(unique0)];
+
+        meshCpu.Vertices[offset + 2] = _cubeVertices[Index.Encode(shared1)];
+        meshCpu.Vertices[offset + 1] = _cubeVertices[Index.Encode(shared0)];
+        meshCpu.Vertices[offset + 0] = _cubeVertices[Index.Encode(unique1)];
+    }
+}
+
 void MeshGenerator::PopulateMesh(const int& index, MeshCpu& meshCpu)
 {
-    int x, y, z;
-    Index.Decode(index, x, y, z);
+    glm::ivec3 coord = Index.Decode(index);
 
-    int iX = _edgeMapX.Index.Encode(x, y, z);
+    int iX = _edgeMapX.Index.Encode(coord);
     int oX = _edgeMapX.IndexOffset[iX];
     if (oX >= 0)
     {
-        if (_edgeMapX.Direction[iX] == 1)
-        {
-            meshCpu.Vertices[oX + 0] = _cubeVertices[Index.Encode(x, y, z)];
-            meshCpu.Vertices[oX + 1] = _cubeVertices[Index.Encode(x, y - 1, z - 1)];
-            meshCpu.Vertices[oX + 2] = _cubeVertices[Index.Encode(x, y - 1, z)]; // unique
+        auto shared0 = coord;
+        auto shared1 = glm::ivec3(coord.x, coord.y - 1, coord.z - 1);
 
-            meshCpu.Vertices[oX + 3] = _cubeVertices[Index.Encode(x, y - 1, z - 1)];
-            meshCpu.Vertices[oX + 4] = _cubeVertices[Index.Encode(x, y, z)];
-            meshCpu.Vertices[oX + 5] = _cubeVertices[Index.Encode(x, y, z - 1)]; // unique
-        }
-        else
-        {
-            meshCpu.Vertices[oX + 5] = _cubeVertices[Index.Encode(x, y, z)];
-            meshCpu.Vertices[oX + 4] = _cubeVertices[Index.Encode(x, y - 1, z - 1)];
-            meshCpu.Vertices[oX + 3] = _cubeVertices[Index.Encode(x, y - 1, z)]; // unique
+        auto unique0 = glm::ivec3(coord.x, coord.y - 1, coord.z);
+        auto unique1 = glm::ivec3(coord.x, coord.y, coord.z - 1);
 
-            meshCpu.Vertices[oX + 2] = _cubeVertices[Index.Encode(x, y - 1, z - 1)];
-            meshCpu.Vertices[oX + 1] = _cubeVertices[Index.Encode(x, y, z)];
-            meshCpu.Vertices[oX + 0] = _cubeVertices[Index.Encode(x, y, z - 1)]; // unique
-        }
+        PushEdge(meshCpu, oX, _edgeMapX.Direction[iX], shared0, shared1, unique0, unique1);
     }
 
-    int iY = _edgeMapY.Index.Encode(x, y, z);
+    int iY = _edgeMapY.Index.Encode(coord);
     int oY = _edgeMapY.IndexOffset[iY];
     if (oY >= 0)
     {
-        if (_edgeMapY.Direction[iY] == 1)
-        {
-            meshCpu.Vertices[oY + 0] = _cubeVertices[Index.Encode(x, y, z)];
-            meshCpu.Vertices[oY + 1] = _cubeVertices[Index.Encode(x - 1, y, z - 1)];
-            meshCpu.Vertices[oY + 2] = _cubeVertices[Index.Encode(x, y, z - 1)]; // unique
+        auto shared0 = coord;
+        auto shared1 = glm::ivec3(coord.x - 1, coord.y, coord.z - 1);
 
-            meshCpu.Vertices[oY + 3] = _cubeVertices[Index.Encode(x - 1, y, z - 1)];
-            meshCpu.Vertices[oY + 4] = _cubeVertices[Index.Encode(x, y, z)];
-            meshCpu.Vertices[oY + 5] = _cubeVertices[Index.Encode(x - 1, y, z)]; // unique
-        }
-        else
-        {
-            meshCpu.Vertices[oY + 5] = _cubeVertices[Index.Encode(x, y, z)];
-            meshCpu.Vertices[oY + 4] = _cubeVertices[Index.Encode(x - 1, y, z - 1)];
-            meshCpu.Vertices[oY + 3] = _cubeVertices[Index.Encode(x, y, z - 1)]; // unique
+        auto unique0 = glm::ivec3(coord.x, coord.y, coord.z - 1);
+        auto unique1 = glm::ivec3(coord.x - 1, coord.y, coord.z);
 
-            meshCpu.Vertices[oY + 2] = _cubeVertices[Index.Encode(x - 1, y, z - 1)];
-            meshCpu.Vertices[oY + 1] = _cubeVertices[Index.Encode(x, y, z)];
-            meshCpu.Vertices[oY + 0] = _cubeVertices[Index.Encode(x - 1, y, z)]; // unique
-        }
+        PushEdge(meshCpu, oY, _edgeMapY.Direction[iY], shared0, shared1, unique0, unique1);
     }
 
-    int iZ = _edgeMapZ.Index.Encode(x, y, z);
+    int iZ = _edgeMapZ.Index.Encode(coord);
     int oZ = _edgeMapZ.IndexOffset[iZ];
     if (oZ >= 0)
     {
-        if (_edgeMapZ.Direction[iZ] == 1)
-        {
-            meshCpu.Vertices[oZ + 0] = _cubeVertices[Index.Encode(x, y, z)];
-            meshCpu.Vertices[oZ + 1] = _cubeVertices[Index.Encode(x - 1, y - 1, z)];
-            meshCpu.Vertices[oZ + 2] = _cubeVertices[Index.Encode(x - 1, y, z)]; // unique
+        auto shared0 = coord;
+        auto shared1 = glm::ivec3(coord.x - 1, coord.y - 1, coord.z);
 
-            meshCpu.Vertices[oZ + 3] = _cubeVertices[Index.Encode(x - 1, y - 1, z)];
-            meshCpu.Vertices[oZ + 4] = _cubeVertices[Index.Encode(x, y, z)];
-            meshCpu.Vertices[oZ + 5] = _cubeVertices[Index.Encode(x, y - 1, z)]; // unique
-        }
-        else
-        {
-            meshCpu.Vertices[oZ + 5] = _cubeVertices[Index.Encode(x, y, z)];
-            meshCpu.Vertices[oZ + 4] = _cubeVertices[Index.Encode(x - 1, y - 1, z)];
-            meshCpu.Vertices[oZ + 3] = _cubeVertices[Index.Encode(x - 1, y, z)]; // unique
+        auto unique0 = glm::ivec3(coord.x - 1, coord.y, coord.z);
+        auto unique1 = glm::ivec3(coord.x, coord.y - 1, coord.z);
 
-            meshCpu.Vertices[oZ + 2] = _cubeVertices[Index.Encode(x - 1, y - 1, z)];
-            meshCpu.Vertices[oZ + 1] = _cubeVertices[Index.Encode(x, y, z)];
-            meshCpu.Vertices[oZ + 0] = _cubeVertices[Index.Encode(x, y - 1, z)]; // unique
-        }
+        PushEdge(meshCpu, oZ, _edgeMapZ.Direction[iZ], shared0, shared1, unique0, unique1);
     }
 }
 
@@ -110,32 +100,30 @@ void MeshGenerator::CalculateEdge(int index)
 {
     float d0 = _cachedSDF->CachedDistances[index];
     glm::vec3 p0 = _cachedSDF->CachedPositions[index];
+    glm::ivec3 coord = _cachedSDF->Index.Decode(index);
 
-    int x, y, z;
-    _cachedSDF->Index.Decode(index, x, y, z);
-
-    CalculateEdgeX(x, y, z, d0, p0);
-    CalculateEdgeY(x, y, z, d0, p0);
-    CalculateEdgeZ(x, y, z, d0, p0);
+    CalculateEdgeX(coord, d0, p0);
+    CalculateEdgeY(coord, d0, p0);
+    CalculateEdgeZ(coord, d0, p0);
 }
 
-void MeshGenerator::CalculateEdgeX(const int& x, const int& y, const int& z, const float& d0, const glm::vec3& p0)
+void MeshGenerator::CalculateEdgeX(const glm::ivec3& coord, const float& d0, const glm::vec3& p0)
 {
-    if (x >= _edgeMapX.Index.SizeX)
+    if (coord.x >= _edgeMapX.Index.Size.x)
         return;
 
     float d1;
     glm::vec3 p1;
-    _cachedSDF->Get(x + 1, y, z, d1, p1);
+    _cachedSDF->Get(glm::ivec3(coord.x + 1, coord.y, coord.z), d1, p1);
     if (NonZeroSign(d0) == NonZeroSign(d1))
         return;
 
-    int index = _edgeMapX.Index.Encode(x, y, z);
+    int index = _edgeMapX.Index.Encode(coord);
 
     _edgeMapX.Intersection[index] = VertexInterp(0, p0, p1, d0, d1);
     _edgeMapX.Direction[index] = NonZeroSign(d1);
 
-    if (y > 0 && z > 0 && y < Index.SizeY && z < Index.SizeZ)
+    if (coord.y > 0 && coord.z > 0 && coord.y < Index.Size.y && coord.z < Index.Size.z)
     {
         int indexOffset;
 #pragma omp atomic capture
@@ -143,10 +131,10 @@ void MeshGenerator::CalculateEdgeX(const int& x, const int& y, const int& z, con
 
         _edgeMapX.IndexOffset[index] = indexOffset * 6;
 
-        _cubeCheck[Index.Encode(x, y, z)] = true;
-        _cubeCheck[Index.Encode(x, y - 1, z)] = true;
-        _cubeCheck[Index.Encode(x, y - 1, z - 1)] = true;
-        _cubeCheck[Index.Encode(x, y, z - 1)] = true;
+        _cubeCheck[Index.Encode(glm::ivec3(coord.x, coord.y, coord.z))] = true;
+        _cubeCheck[Index.Encode(glm::ivec3(coord.x, coord.y - 1, coord.z))] = true;
+        _cubeCheck[Index.Encode(glm::ivec3(coord.x, coord.y - 1, coord.z - 1))] = true;
+        _cubeCheck[Index.Encode(glm::ivec3(coord.x, coord.y, coord.z - 1))] = true;
     }
     else
     {
@@ -154,23 +142,23 @@ void MeshGenerator::CalculateEdgeX(const int& x, const int& y, const int& z, con
     }
 }
 
-void MeshGenerator::CalculateEdgeY(const int& x, const int& y, const int& z, const float& d0, const glm::vec3& p0)
+void MeshGenerator::CalculateEdgeY(const glm::ivec3& coord, const float& d0, const glm::vec3& p0)
 {
-    if (y >= _edgeMapY.Index.SizeY)
+    if (coord.y >= _edgeMapY.Index.Size.y)
         return;
 
     float d1;
     glm::vec3 p1;
-    _cachedSDF->Get(x, y + 1, z, d1, p1);
+    _cachedSDF->Get(glm::ivec3(coord.x, coord.y + 1, coord.z), d1, p1);
     if (NonZeroSign(d0) == NonZeroSign(d1))
         return;
 
-    int index = _edgeMapY.Index.Encode(x, y, z);
+    int index = _edgeMapY.Index.Encode(coord);
 
     _edgeMapY.Intersection[index] = VertexInterp(0, p0, p1, d0, d1);
     _edgeMapY.Direction[index] = NonZeroSign(d1);
 
-    if (x > 0 && z > 0 && x < Index.SizeX && z < Index.SizeZ)
+    if (coord.x > 0 && coord.z > 0 && coord.x < Index.Size.x && coord.z < Index.Size.z)
     {
         int indexOffset;
 #pragma omp atomic capture
@@ -178,10 +166,10 @@ void MeshGenerator::CalculateEdgeY(const int& x, const int& y, const int& z, con
 
         _edgeMapY.IndexOffset[index] = indexOffset * 6;
 
-        _cubeCheck[Index.Encode(x, y, z)] = true;
-        _cubeCheck[Index.Encode(x - 1, y, z)] = true;
-        _cubeCheck[Index.Encode(x - 1, y, z - 1)] = true;
-        _cubeCheck[Index.Encode(x, y, z - 1)] = true;
+        _cubeCheck[Index.Encode(glm::ivec3(coord.x, coord.y, coord.z))] = true;
+        _cubeCheck[Index.Encode(glm::ivec3(coord.x - 1, coord.y, coord.z))] = true;
+        _cubeCheck[Index.Encode(glm::ivec3(coord.x - 1, coord.y, coord.z - 1))] = true;
+        _cubeCheck[Index.Encode(glm::ivec3(coord.x, coord.y, coord.z - 1))] = true;
     }
     else
     {
@@ -189,23 +177,23 @@ void MeshGenerator::CalculateEdgeY(const int& x, const int& y, const int& z, con
     }
 }
 
-void MeshGenerator::CalculateEdgeZ(const int& x, const int& y, const int& z, const float& d0, const glm::vec3& p0)
+void MeshGenerator::CalculateEdgeZ(const glm::ivec3& coord, const float& d0, const glm::vec3& p0)
 {
-    if (z >= _edgeMapZ.Index.SizeZ)
+    if (coord.z >= _edgeMapZ.Index.Size.z)
         return;
 
     float d1;
     glm::vec3 p1;
-    _cachedSDF->Get(x, y, z + 1, d1, p1);
+    _cachedSDF->Get(glm::ivec3(coord.x, coord.y, coord.z + 1), d1, p1);
     if (NonZeroSign(d0) == NonZeroSign(d1))
         return;
 
-    int index = _edgeMapZ.Index.Encode(x, y, z);
+    int index = _edgeMapZ.Index.Encode(coord);
 
     _edgeMapZ.Intersection[index] = VertexInterp(0, p0, p1, d0, d1);
     _edgeMapZ.Direction[index] = NonZeroSign(d1);
 
-    if (x > 0 && y > 0 && x < Index.SizeX && y < Index.SizeY)
+    if (coord.x > 0 && coord.y > 0 && coord.x < Index.Size.x && coord.y < Index.Size.y)
     {
         int indexOffset;
 #pragma omp atomic capture
@@ -213,10 +201,10 @@ void MeshGenerator::CalculateEdgeZ(const int& x, const int& y, const int& z, con
 
         _edgeMapZ.IndexOffset[index] = indexOffset * 6;
 
-        _cubeCheck[Index.Encode(x, y, z)] = true;
-        _cubeCheck[Index.Encode(x - 1, y, z)] = true;
-        _cubeCheck[Index.Encode(x - 1, y - 1, z)] = true;
-        _cubeCheck[Index.Encode(x, y - 1, z)] = true;
+        _cubeCheck[Index.Encode(glm::ivec3(coord.x, coord.y, coord.z))] = true;
+        _cubeCheck[Index.Encode(glm::ivec3(coord.x - 1, coord.y, coord.z))] = true;
+        _cubeCheck[Index.Encode(glm::ivec3(coord.x - 1, coord.y - 1, coord.z))] = true;
+        _cubeCheck[Index.Encode(glm::ivec3(coord.x, coord.y - 1, coord.z))] = true;
     }
     else
     {
@@ -226,38 +214,37 @@ void MeshGenerator::CalculateEdgeZ(const int& x, const int& y, const int& z, con
 
 void MeshGenerator::CalculateVertex(int index)
 {
-    int x, y, z;
-    Index.Decode(index, x, y, z);
+    glm::ivec3 coord = Index.Decode(index);
     if (!_cubeCheck[index])
         return;
 
     int cnt = 0;
     glm::vec3 sum = glm::vec3(0.0f);
 
-    AggregateEdge(_edgeMapX, x, y, z, sum, cnt);
-    AggregateEdge(_edgeMapX, x, y + 1, z, sum, cnt);
-    AggregateEdge(_edgeMapX, x, y + 1, z + 1, sum, cnt);
-    AggregateEdge(_edgeMapX, x, y, z + 1, sum, cnt);
+    AggregateEdge(_edgeMapX, glm::ivec3(coord.x, coord.y, coord.z), sum, cnt);
+    AggregateEdge(_edgeMapX, glm::ivec3(coord.x, coord.y + 1, coord.z), sum, cnt);
+    AggregateEdge(_edgeMapX, glm::ivec3(coord.x, coord.y + 1, coord.z + 1), sum, cnt);
+    AggregateEdge(_edgeMapX, glm::ivec3(coord.x, coord.y, coord.z + 1), sum, cnt);
 
-    AggregateEdge(_edgeMapY, x, y, z, sum, cnt);
-    AggregateEdge(_edgeMapY, x + 1, y, z, sum, cnt);
-    AggregateEdge(_edgeMapY, x + 1, y, z + 1, sum, cnt);
-    AggregateEdge(_edgeMapY, x, y, z + 1, sum, cnt);
+    AggregateEdge(_edgeMapY, glm::ivec3(coord.x, coord.y, coord.z), sum, cnt);
+    AggregateEdge(_edgeMapY, glm::ivec3(coord.x + 1, coord.y, coord.z), sum, cnt);
+    AggregateEdge(_edgeMapY, glm::ivec3(coord.x + 1, coord.y, coord.z + 1), sum, cnt);
+    AggregateEdge(_edgeMapY, glm::ivec3(coord.x, coord.y, coord.z + 1), sum, cnt);
 
-    AggregateEdge(_edgeMapZ, x, y, z, sum, cnt);
-    AggregateEdge(_edgeMapZ, x + 1, y, z, sum, cnt);
-    AggregateEdge(_edgeMapZ, x + 1, y + 1, z, sum, cnt);
-    AggregateEdge(_edgeMapZ, x, y + 1, z, sum, cnt);
+    AggregateEdge(_edgeMapZ, glm::ivec3(coord.x, coord.y, coord.z), sum, cnt);
+    AggregateEdge(_edgeMapZ, glm::ivec3(coord.x + 1, coord.y, coord.z), sum, cnt);
+    AggregateEdge(_edgeMapZ, glm::ivec3(coord.x + 1, coord.y + 1, coord.z), sum, cnt);
+    AggregateEdge(_edgeMapZ, glm::ivec3(coord.x, coord.y + 1, coord.z), sum, cnt);
 
     _cubeVertices[index] = sum / (float)cnt;
 }
 
-void MeshGenerator::AggregateEdge(const EdgeMap& edgeMap, const int& x, const int& y, const int& z, glm::vec3& sum, int& cnt)
+void MeshGenerator::AggregateEdge(const EdgeMap& edgeMap, const glm::ivec3& coord, glm::vec3& sum, int& cnt)
 {
-    int iX = edgeMap.Index.Encode(x, y, z);
-    if (edgeMap.IndexOffset[iX] != EDGE_NO_SIGN_CHANGE)
+    int index = edgeMap.Index.Encode(coord);
+    if (edgeMap.IndexOffset[index] != EDGE_NO_SIGN_CHANGE)
     {
-        sum += edgeMap.Intersection[iX];
+        sum += edgeMap.Intersection[index];
         cnt++;
     }
 }
