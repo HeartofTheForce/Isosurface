@@ -16,7 +16,7 @@ struct CachedSDF
     void Measure(const glm::mat4& localToWorld, const SDF& f);
     inline void Get(const int& x, const int& y, const int& z, float& distance, glm::vec3& position) const
     {
-        int index = Index.To1D(x, y, z);
+        int index = Index.Encode(x, y, z);
 
         distance = CachedDistances[index];
         position = CachedPositions[index];

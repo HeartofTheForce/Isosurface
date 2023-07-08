@@ -8,7 +8,7 @@ void CachedSDF::Measure(const glm::mat4& localToWorld, const SDF& f)
         {
             for (int x = 0; x < Index.SizeX; x++)
             {
-                int index = Index.To1D(x, y, z);
+                int index = Index.Encode(x, y, z);
                 glm::vec3 p = localToWorld * glm::vec4(x, y, z, 1.0f);
 
                 if (x == 0 || x == Index.SizeX - 1 ||

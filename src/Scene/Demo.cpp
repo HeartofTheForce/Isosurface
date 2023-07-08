@@ -5,6 +5,7 @@
 #include <PerlinNoise.hpp>
 #include <Utility/InputHandler.h>
 #include <Utility/WindowHandler.h>
+#include <chrono>
 #include <glm/glm.hpp>
 
 #define FULLSCREEN true
@@ -23,6 +24,13 @@ SDF Box(glm::vec3 b)
         glm::vec3 q = glm::vec3(glm::abs(p.x), glm::abs(p.y), glm::abs(p.z)) - b;
         glm::vec3 qMax = glm::vec3(glm::max(q.x, 0.0f), glm::max(q.y, 0.0f), glm::max(q.z, 0.0f));
         return glm::length(qMax) + glm::min(glm::max(q.x, glm::max(q.y, q.z)), 0.0f);
+    };
+}
+
+SDF Sphere(float r)
+{
+    return [r](glm::vec3 p) {
+        return glm::length(p) - r;
     };
 }
 
@@ -46,7 +54,17 @@ float Noise(glm::vec3 p)
 
 void Demo()
 {
-    GLFWwindow* window = WindowHandler::Instance().CreateWindow(WIDTH, HEIGHT, FULLSCREEN, "Test Title");
+    const int Size = 512;
+    const float Extent = Size * 0.4f;
+    const float Offset = (Size - 1) * 0.5f;
+
+    auto shape = Translate(
+        glm::vec3(Offset, Offset, Offset),
+        Box(glm::vec3(Extent, Extent, Extent)) //
+        // Sphere(Extent) //
+    );
+
+    GLFWwindow *window = WindowHandler::Instance().CreateWindow(WIDTH, HEIGHT, FULLSCREEN, "Test Title");
     InputHandler inputHandler = {window};
 
     StandardProgram standardProgram = {};
@@ -58,14 +76,8 @@ void Demo()
     Material cubeMaterial = {};
     cubeMaterial.Diffuse = glm::vec3(1.0f);
 
-    const int Size = 32;
-
-    const float Extent = 5.0f;
-    const float Offset = (Size - 1) / 2.0f;
-    auto shape = Translate(glm::vec3(Offset, Offset, Offset), Box(glm::vec3(Extent, Extent, Extent)));
-
     std::shared_ptr<CachedSDF> cachedSDF = std::shared_ptr<CachedSDF>(new CachedSDF{Size, Size, Size});
-    cachedSDF->Measure(glm::mat4(1.0f), Noise);
+    cachedSDF->Measure(glm::mat4(1.0f), shape);
     MeshGenerator meshGenerator = {cachedSDF};
 
     Camera camera = {WIDTH, HEIGHT};

@@ -15,7 +15,7 @@ class Camera
     float _fovY{glm::radians(83.5817f)};
     float _aspect;
     float _near{0.1f};
-    float _far{100.0f};
+    float _far{1000.0f};
 
   public:
     Transform Transform{};

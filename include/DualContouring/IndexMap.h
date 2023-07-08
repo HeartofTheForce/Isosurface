@@ -18,7 +18,7 @@ struct IndexMap
     {
     }
 
-    inline void To3D(
+    inline void Decode(
         int idx,
         int& x, int& y, int& z) const
     {
@@ -28,7 +28,7 @@ struct IndexMap
         x = idx % SizeX;
     }
 
-    inline int To1D(const int& x, const int& y, const int& z) const
+    inline int Encode(const int& x, const int& y, const int& z) const
     {
         return (z * SizeX * SizeY) + (y * SizeX) + x;
     }

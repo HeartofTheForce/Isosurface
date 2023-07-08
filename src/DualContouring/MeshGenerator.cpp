@@ -45,83 +45,83 @@ MeshCpu MeshGenerator::BuildMesh(const int& totalVertices)
 void MeshGenerator::PopulateMesh(const int& index, MeshCpu& meshCpu)
 {
     int x, y, z;
-    Index.To3D(index, x, y, z);
+    Index.Decode(index, x, y, z);
 
-    int iX = _edgeMapX.Index.To1D(x, y, z);
+    int iX = _edgeMapX.Index.Encode(x, y, z);
     int oX = _edgeMapX.IndexOffset[iX];
     if (oX >= 0)
     {
         if (_edgeMapX.Direction[iX] == 1)
         {
-            meshCpu.Vertices[oX + 0] = _cubeVertices[Index.To1D(x, y, z)];
-            meshCpu.Vertices[oX + 1] = _cubeVertices[Index.To1D(x, y - 1, z - 1)];
-            meshCpu.Vertices[oX + 2] = _cubeVertices[Index.To1D(x, y - 1, z)]; // unique
+            meshCpu.Vertices[oX + 0] = _cubeVertices[Index.Encode(x, y, z)];
+            meshCpu.Vertices[oX + 1] = _cubeVertices[Index.Encode(x, y - 1, z - 1)];
+            meshCpu.Vertices[oX + 2] = _cubeVertices[Index.Encode(x, y - 1, z)]; // unique
 
-            meshCpu.Vertices[oX + 3] = _cubeVertices[Index.To1D(x, y - 1, z - 1)];
-            meshCpu.Vertices[oX + 4] = _cubeVertices[Index.To1D(x, y, z)];
-            meshCpu.Vertices[oX + 5] = _cubeVertices[Index.To1D(x, y, z - 1)]; // unique
+            meshCpu.Vertices[oX + 3] = _cubeVertices[Index.Encode(x, y - 1, z - 1)];
+            meshCpu.Vertices[oX + 4] = _cubeVertices[Index.Encode(x, y, z)];
+            meshCpu.Vertices[oX + 5] = _cubeVertices[Index.Encode(x, y, z - 1)]; // unique
         }
         else
         {
-            meshCpu.Vertices[oX + 5] = _cubeVertices[Index.To1D(x, y, z)];
-            meshCpu.Vertices[oX + 4] = _cubeVertices[Index.To1D(x, y - 1, z - 1)];
-            meshCpu.Vertices[oX + 3] = _cubeVertices[Index.To1D(x, y - 1, z)]; // unique
+            meshCpu.Vertices[oX + 5] = _cubeVertices[Index.Encode(x, y, z)];
+            meshCpu.Vertices[oX + 4] = _cubeVertices[Index.Encode(x, y - 1, z - 1)];
+            meshCpu.Vertices[oX + 3] = _cubeVertices[Index.Encode(x, y - 1, z)]; // unique
 
-            meshCpu.Vertices[oX + 2] = _cubeVertices[Index.To1D(x, y - 1, z - 1)];
-            meshCpu.Vertices[oX + 1] = _cubeVertices[Index.To1D(x, y, z)];
-            meshCpu.Vertices[oX + 0] = _cubeVertices[Index.To1D(x, y, z - 1)]; // unique
+            meshCpu.Vertices[oX + 2] = _cubeVertices[Index.Encode(x, y - 1, z - 1)];
+            meshCpu.Vertices[oX + 1] = _cubeVertices[Index.Encode(x, y, z)];
+            meshCpu.Vertices[oX + 0] = _cubeVertices[Index.Encode(x, y, z - 1)]; // unique
         }
     }
 
-    int iY = _edgeMapY.Index.To1D(x, y, z);
+    int iY = _edgeMapY.Index.Encode(x, y, z);
     int oY = _edgeMapY.IndexOffset[iY];
     if (oY >= 0)
     {
         if (_edgeMapY.Direction[iY] == 1)
         {
-            meshCpu.Vertices[oY + 0] = _cubeVertices[Index.To1D(x, y, z)];
-            meshCpu.Vertices[oY + 1] = _cubeVertices[Index.To1D(x - 1, y, z - 1)];
-            meshCpu.Vertices[oY + 2] = _cubeVertices[Index.To1D(x, y, z - 1)]; // unique
+            meshCpu.Vertices[oY + 0] = _cubeVertices[Index.Encode(x, y, z)];
+            meshCpu.Vertices[oY + 1] = _cubeVertices[Index.Encode(x - 1, y, z - 1)];
+            meshCpu.Vertices[oY + 2] = _cubeVertices[Index.Encode(x, y, z - 1)]; // unique
 
-            meshCpu.Vertices[oY + 3] = _cubeVertices[Index.To1D(x - 1, y, z - 1)];
-            meshCpu.Vertices[oY + 4] = _cubeVertices[Index.To1D(x, y, z)];
-            meshCpu.Vertices[oY + 5] = _cubeVertices[Index.To1D(x - 1, y, z)]; // unique
+            meshCpu.Vertices[oY + 3] = _cubeVertices[Index.Encode(x - 1, y, z - 1)];
+            meshCpu.Vertices[oY + 4] = _cubeVertices[Index.Encode(x, y, z)];
+            meshCpu.Vertices[oY + 5] = _cubeVertices[Index.Encode(x - 1, y, z)]; // unique
         }
         else
         {
-            meshCpu.Vertices[oY + 5] = _cubeVertices[Index.To1D(x, y, z)];
-            meshCpu.Vertices[oY + 4] = _cubeVertices[Index.To1D(x - 1, y, z - 1)];
-            meshCpu.Vertices[oY + 3] = _cubeVertices[Index.To1D(x, y, z - 1)]; // unique
+            meshCpu.Vertices[oY + 5] = _cubeVertices[Index.Encode(x, y, z)];
+            meshCpu.Vertices[oY + 4] = _cubeVertices[Index.Encode(x - 1, y, z - 1)];
+            meshCpu.Vertices[oY + 3] = _cubeVertices[Index.Encode(x, y, z - 1)]; // unique
 
-            meshCpu.Vertices[oY + 2] = _cubeVertices[Index.To1D(x - 1, y, z - 1)];
-            meshCpu.Vertices[oY + 1] = _cubeVertices[Index.To1D(x, y, z)];
-            meshCpu.Vertices[oY + 0] = _cubeVertices[Index.To1D(x - 1, y, z)]; // unique
+            meshCpu.Vertices[oY + 2] = _cubeVertices[Index.Encode(x - 1, y, z - 1)];
+            meshCpu.Vertices[oY + 1] = _cubeVertices[Index.Encode(x, y, z)];
+            meshCpu.Vertices[oY + 0] = _cubeVertices[Index.Encode(x - 1, y, z)]; // unique
         }
     }
 
-    int iZ = _edgeMapZ.Index.To1D(x, y, z);
+    int iZ = _edgeMapZ.Index.Encode(x, y, z);
     int oZ = _edgeMapZ.IndexOffset[iZ];
     if (oZ >= 0)
     {
         if (_edgeMapZ.Direction[iZ] == 1)
         {
-            meshCpu.Vertices[oZ + 0] = _cubeVertices[Index.To1D(x, y, z)];
-            meshCpu.Vertices[oZ + 1] = _cubeVertices[Index.To1D(x - 1, y - 1, z)];
-            meshCpu.Vertices[oZ + 2] = _cubeVertices[Index.To1D(x - 1, y, z)]; // unique
+            meshCpu.Vertices[oZ + 0] = _cubeVertices[Index.Encode(x, y, z)];
+            meshCpu.Vertices[oZ + 1] = _cubeVertices[Index.Encode(x - 1, y - 1, z)];
+            meshCpu.Vertices[oZ + 2] = _cubeVertices[Index.Encode(x - 1, y, z)]; // unique
 
-            meshCpu.Vertices[oZ + 3] = _cubeVertices[Index.To1D(x - 1, y - 1, z)];
-            meshCpu.Vertices[oZ + 4] = _cubeVertices[Index.To1D(x, y, z)];
-            meshCpu.Vertices[oZ + 5] = _cubeVertices[Index.To1D(x, y - 1, z)]; // unique
+            meshCpu.Vertices[oZ + 3] = _cubeVertices[Index.Encode(x - 1, y - 1, z)];
+            meshCpu.Vertices[oZ + 4] = _cubeVertices[Index.Encode(x, y, z)];
+            meshCpu.Vertices[oZ + 5] = _cubeVertices[Index.Encode(x, y - 1, z)]; // unique
         }
         else
         {
-            meshCpu.Vertices[oZ + 5] = _cubeVertices[Index.To1D(x, y, z)];
-            meshCpu.Vertices[oZ + 4] = _cubeVertices[Index.To1D(x - 1, y - 1, z)];
-            meshCpu.Vertices[oZ + 3] = _cubeVertices[Index.To1D(x - 1, y, z)]; // unique
+            meshCpu.Vertices[oZ + 5] = _cubeVertices[Index.Encode(x, y, z)];
+            meshCpu.Vertices[oZ + 4] = _cubeVertices[Index.Encode(x - 1, y - 1, z)];
+            meshCpu.Vertices[oZ + 3] = _cubeVertices[Index.Encode(x - 1, y, z)]; // unique
 
-            meshCpu.Vertices[oZ + 2] = _cubeVertices[Index.To1D(x - 1, y - 1, z)];
-            meshCpu.Vertices[oZ + 1] = _cubeVertices[Index.To1D(x, y, z)];
-            meshCpu.Vertices[oZ + 0] = _cubeVertices[Index.To1D(x, y - 1, z)]; // unique
+            meshCpu.Vertices[oZ + 2] = _cubeVertices[Index.Encode(x - 1, y - 1, z)];
+            meshCpu.Vertices[oZ + 1] = _cubeVertices[Index.Encode(x, y, z)];
+            meshCpu.Vertices[oZ + 0] = _cubeVertices[Index.Encode(x, y - 1, z)]; // unique
         }
     }
 }
@@ -132,7 +132,7 @@ void MeshGenerator::CalculateEdge(int index)
     glm::vec3 p0 = _cachedSDF->CachedPositions[index];
 
     int x, y, z;
-    _cachedSDF->Index.To3D(index, x, y, z);
+    _cachedSDF->Index.Decode(index, x, y, z);
 
     CalculateEdgeX(x, y, z, d0, p0);
     CalculateEdgeY(x, y, z, d0, p0);
@@ -150,7 +150,7 @@ void MeshGenerator::CalculateEdgeX(const int& x, const int& y, const int& z, con
     if (NonZeroSign(d0) == NonZeroSign(d1))
         return;
 
-    int index = _edgeMapX.Index.To1D(x, y, z);
+    int index = _edgeMapX.Index.Encode(x, y, z);
 
     _edgeMapX.Intersection[index] = VertexInterp(0, p0, p1, d0, d1);
     _edgeMapX.Direction[index] = NonZeroSign(d1);
@@ -163,10 +163,10 @@ void MeshGenerator::CalculateEdgeX(const int& x, const int& y, const int& z, con
 
         _edgeMapX.IndexOffset[index] = indexOffset * 6;
 
-        _cubeCheck[Index.To1D(x, y, z)] = true;
-        _cubeCheck[Index.To1D(x, y - 1, z)] = true;
-        _cubeCheck[Index.To1D(x, y - 1, z - 1)] = true;
-        _cubeCheck[Index.To1D(x, y, z - 1)] = true;
+        _cubeCheck[Index.Encode(x, y, z)] = true;
+        _cubeCheck[Index.Encode(x, y - 1, z)] = true;
+        _cubeCheck[Index.Encode(x, y - 1, z - 1)] = true;
+        _cubeCheck[Index.Encode(x, y, z - 1)] = true;
     }
     else
     {
@@ -185,7 +185,7 @@ void MeshGenerator::CalculateEdgeY(const int& x, const int& y, const int& z, con
     if (NonZeroSign(d0) == NonZeroSign(d1))
         return;
 
-    int index = _edgeMapY.Index.To1D(x, y, z);
+    int index = _edgeMapY.Index.Encode(x, y, z);
 
     _edgeMapY.Intersection[index] = VertexInterp(0, p0, p1, d0, d1);
     _edgeMapY.Direction[index] = NonZeroSign(d1);
@@ -198,10 +198,10 @@ void MeshGenerator::CalculateEdgeY(const int& x, const int& y, const int& z, con
 
         _edgeMapY.IndexOffset[index] = indexOffset * 6;
 
-        _cubeCheck[Index.To1D(x, y, z)] = true;
-        _cubeCheck[Index.To1D(x - 1, y, z)] = true;
-        _cubeCheck[Index.To1D(x - 1, y, z - 1)] = true;
-        _cubeCheck[Index.To1D(x, y, z - 1)] = true;
+        _cubeCheck[Index.Encode(x, y, z)] = true;
+        _cubeCheck[Index.Encode(x - 1, y, z)] = true;
+        _cubeCheck[Index.Encode(x - 1, y, z - 1)] = true;
+        _cubeCheck[Index.Encode(x, y, z - 1)] = true;
     }
     else
     {
@@ -220,7 +220,7 @@ void MeshGenerator::CalculateEdgeZ(const int& x, const int& y, const int& z, con
     if (NonZeroSign(d0) == NonZeroSign(d1))
         return;
 
-    int index = _edgeMapZ.Index.To1D(x, y, z);
+    int index = _edgeMapZ.Index.Encode(x, y, z);
 
     _edgeMapZ.Intersection[index] = VertexInterp(0, p0, p1, d0, d1);
     _edgeMapZ.Direction[index] = NonZeroSign(d1);
@@ -233,10 +233,10 @@ void MeshGenerator::CalculateEdgeZ(const int& x, const int& y, const int& z, con
 
         _edgeMapZ.IndexOffset[index] = indexOffset * 6;
 
-        _cubeCheck[Index.To1D(x, y, z)] = true;
-        _cubeCheck[Index.To1D(x - 1, y, z)] = true;
-        _cubeCheck[Index.To1D(x - 1, y - 1, z)] = true;
-        _cubeCheck[Index.To1D(x, y - 1, z)] = true;
+        _cubeCheck[Index.Encode(x, y, z)] = true;
+        _cubeCheck[Index.Encode(x - 1, y, z)] = true;
+        _cubeCheck[Index.Encode(x - 1, y - 1, z)] = true;
+        _cubeCheck[Index.Encode(x, y - 1, z)] = true;
     }
     else
     {
@@ -247,7 +247,7 @@ void MeshGenerator::CalculateEdgeZ(const int& x, const int& y, const int& z, con
 void MeshGenerator::CalculateVertex(int index)
 {
     int x, y, z;
-    Index.To3D(index, x, y, z);
+    Index.Decode(index, x, y, z);
     if (!_cubeCheck[index])
         return;
 
@@ -274,7 +274,7 @@ void MeshGenerator::CalculateVertex(int index)
 
 void MeshGenerator::AggregateEdge(const EdgeMap& edgeMap, const int& x, const int& y, const int& z, glm::vec3& sum, int& cnt)
 {
-    int iX = edgeMap.Index.To1D(x, y, z);
+    int iX = edgeMap.Index.Encode(x, y, z);
     if (edgeMap.IndexOffset[iX] != EDGE_NO_SIGN_CHANGE)
     {
         sum += edgeMap.Intersection[iX];
