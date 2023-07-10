@@ -30,8 +30,11 @@ void Camera::Update(const float& speed, const glm::vec3& moveDirection, const fl
 
     Transform.Orientation(glm::quat(glm::vec3(_pitch, _yaw, 0.0f)));
 
-    Transform.Position(Transform.Position() + (speed * Transform.Forward() * moveDirection.z));
-    Transform.Position(Transform.Position() + (speed * Transform.Right() * moveDirection.x));
+    if (glm::dot(moveDirection, moveDirection) > 0)
+    {
+        auto wishDir = glm::normalize(moveDirection);
+        Transform.Position(Transform.Position() + Transform.Orientation() * wishDir * speed);
+    }
 }
 
 glm::mat4 Camera::GetViewMatrix()

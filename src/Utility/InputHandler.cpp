@@ -45,14 +45,18 @@ void InputHandler::EndFrame()
 glm::vec3 InputHandler::GetMoveDirection()
 {
     glm::vec3 moveDirection = glm::vec3(0.0f);
-    if (glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS)
-        moveDirection.z += 1.0f;
-    if (glfwGetKey(_window, GLFW_KEY_S) == GLFW_PRESS)
-        moveDirection.z -= 1.0f;
     if (glfwGetKey(_window, GLFW_KEY_D) == GLFW_PRESS)
         moveDirection.x += 1.0f;
     if (glfwGetKey(_window, GLFW_KEY_A) == GLFW_PRESS)
         moveDirection.x -= 1.0f;
+    if (glfwGetKey(_window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        moveDirection.y += 1.0f;
+    if (glfwGetKey(_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+        moveDirection.y -= 1.0f;
+    if (glfwGetKey(_window, GLFW_KEY_W) == GLFW_PRESS)
+        moveDirection.z += 1.0f;
+    if (glfwGetKey(_window, GLFW_KEY_S) == GLFW_PRESS)
+        moveDirection.z -= 1.0f;
 
     return moveDirection;
 }

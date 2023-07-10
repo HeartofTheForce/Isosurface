@@ -1,3 +1,4 @@
 #pragma once
+#include <Scene/Benchmark.h>
 
-void Demo();
+void Demo(Benchmark benchmark);

@@ -1,6 +1,6 @@
 #include <Isosurface/CachedSDF.h>
 
-void CachedSDF::Measure(const glm::mat4& localToWorld, const SDF& f)
+void CachedSDF::Measure(const glm::mat4& localToWorld, const SDF::SDF& f)
 {
     for (glm::uint z = 0; z < Index.Size.z; z++)
     {
