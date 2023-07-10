@@ -39,6 +39,21 @@ std::vector<BenchmarkBuilder> BenchmarkBuilders = {
 
         return b;
     },
+    []() -> Benchmark {
+        Benchmark b;
+
+        b.Name = "Diff";
+        b.Size = 16;
+        auto extent = b.Size * 0.4f;
+        auto offset = (b.Size - 1) * 0.5f;
+        b.Shape =
+            SDF::Difference(
+                SDF::Translate(glm::vec3(offset), SDF::Box(glm::vec3(extent))),
+                SDF::Sphere(extent)
+            );
+
+        return b;
+    },
 };
 
 const size_t ITERATIONS = 10;
@@ -50,7 +65,7 @@ int main()
     //     ExecuteBenchmark(BenchmarkBuilders[i](), ITERATIONS);
     // }
 
-    Demo(BenchmarkBuilders[2]());
+    Demo(BenchmarkBuilders[3]());
 
     return 0;
 }

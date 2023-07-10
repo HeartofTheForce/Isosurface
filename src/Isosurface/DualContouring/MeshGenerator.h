@@ -33,12 +33,17 @@ class MeshGenerator
         const glm::uvec3& unique1
     );
     inline void CalculateEdge(int index);
-    inline void CalculateEdgeX(const glm::uvec3& coord, const float& d0, const glm::vec3& p0);
-    inline void CalculateEdgeY(const glm::uvec3& coord, const float& d0, const glm::vec3& p0);
-    inline void CalculateEdgeZ(const glm::uvec3& coord, const float& d0, const glm::vec3& p0);
+    inline void CalculateEdgeX(const glm::uvec3& coord, const float& d0, const glm::vec3& p0, const glm::vec3& n0);
+    inline void CalculateEdgeY(const glm::uvec3& coord, const float& d0, const glm::vec3& p0, const glm::vec3& n0);
+    inline void CalculateEdgeZ(const glm::uvec3& coord, const float& d0, const glm::vec3& p0, const glm::vec3& n0);
     inline void CalculateVertex(int index);
     inline void AggregateEdge(
-        const EdgeMap& edgeMap, const glm::uvec3& coord, glm::vec3& sum, int& cnt
+        const EdgeMap& edgeMap,
+        const glm::uvec3& coord,
+        glm::vec3& sum,
+        glm::vec3* points,
+        glm::vec3* normals,
+        size_t& cnt
     );
 
   public:
@@ -58,4 +63,4 @@ class MeshGenerator
     {
     }
 };
-}
+} // namespace DualContouring

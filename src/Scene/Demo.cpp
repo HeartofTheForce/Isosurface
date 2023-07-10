@@ -10,9 +10,9 @@
 #include <chrono>
 #include <glm/glm.hpp>
 
-using namespace MarchingCubes;
+using namespace DualContouring;
 
-#define FULLSCREEN true
+#define FULLSCREEN false
 
 #if FULLSCREEN
 #define WIDTH 1920

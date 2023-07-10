@@ -4,6 +4,7 @@
 
 #define EDGE_NO_SIGN_CHANGE -1
 #define EDGE_BORDER -2
+#define SHARP_FEATURES
 
 namespace DualContouring
 {
@@ -61,7 +62,7 @@ void MeshGenerator::PopulateMesh(const int& index, MeshCpu& meshCpu)
         auto unique0 = glm::uvec3(coord.x, coord.y - 1, coord.z);
         auto unique1 = glm::uvec3(coord.x, coord.y, coord.z - 1);
 
-        PushEdge(meshCpu, oX, _edgeMapX.Direction[iX], shared0, shared1, unique0, unique1);
+        PushEdge(meshCpu, oX, _edgeMapX.Directions[iX], shared0, shared1, unique0, unique1);
     }
 
     int iY = _edgeMapY.Index.Encode(coord);
@@ -74,7 +75,7 @@ void MeshGenerator::PopulateMesh(const int& index, MeshCpu& meshCpu)
         auto unique0 = glm::uvec3(coord.x, coord.y, coord.z - 1);
         auto unique1 = glm::uvec3(coord.x - 1, coord.y, coord.z);
 
-        PushEdge(meshCpu, oY, _edgeMapY.Direction[iY], shared0, shared1, unique0, unique1);
+        PushEdge(meshCpu, oY, _edgeMapY.Directions[iY], shared0, shared1, unique0, unique1);
     }
 
     int iZ = _edgeMapZ.Index.Encode(coord);
@@ -87,7 +88,7 @@ void MeshGenerator::PopulateMesh(const int& index, MeshCpu& meshCpu)
         auto unique0 = glm::uvec3(coord.x - 1, coord.y, coord.z);
         auto unique1 = glm::uvec3(coord.x, coord.y - 1, coord.z);
 
-        PushEdge(meshCpu, oZ, _edgeMapZ.Direction[iZ], shared0, shared1, unique0, unique1);
+        PushEdge(meshCpu, oZ, _edgeMapZ.Directions[iZ], shared0, shared1, unique0, unique1);
     }
 }
 
@@ -95,28 +96,31 @@ void MeshGenerator::CalculateEdge(int index)
 {
     float d0 = _cachedSDF->Distances[index];
     glm::vec3 p0 = _cachedSDF->Positions[index];
+    glm::vec3 n0 = _cachedSDF->Normals[index];
     glm::uvec3 coord = _cachedSDF->Index.Decode(index);
 
-    CalculateEdgeX(coord, d0, p0);
-    CalculateEdgeY(coord, d0, p0);
-    CalculateEdgeZ(coord, d0, p0);
+    CalculateEdgeX(coord, d0, p0, n0);
+    CalculateEdgeY(coord, d0, p0, n0);
+    CalculateEdgeZ(coord, d0, p0, n0);
 }
 
-void MeshGenerator::CalculateEdgeX(const glm::uvec3& coord, const float& d0, const glm::vec3& p0)
+void MeshGenerator::CalculateEdgeX(const glm::uvec3& coord, const float& d0, const glm::vec3& p0, const glm::vec3& n0)
 {
     if (coord.x >= _edgeMapX.Index.Size.x)
         return;
 
     float d1;
     glm::vec3 p1;
-    _cachedSDF->Get(glm::uvec3(coord.x + 1, coord.y, coord.z), d1, p1);
+    glm::vec3 n1;
+    _cachedSDF->Get(glm::uvec3(coord.x + 1, coord.y, coord.z), d1, p1, n1);
     if (NonZeroSign(d0) == NonZeroSign(d1))
         return;
 
     int index = _edgeMapX.Index.Encode(coord);
 
-    _edgeMapX.Intersection[index] = VertexInterp(0, p0, p1, d0, d1);
-    _edgeMapX.Direction[index] = NonZeroSign(d1);
+    _edgeMapX.Intersections[index] = Interpolate(0, p0, p1, d0, d1);
+    _edgeMapX.Normals[index] = Interpolate(0, n0, n1, d0, d1);
+    _edgeMapX.Directions[index] = NonZeroSign(d1);
 
     if (coord.y > 0 && coord.z > 0 && coord.y < _index.Size.y && coord.z < _index.Size.z)
     {
@@ -137,21 +141,23 @@ void MeshGenerator::CalculateEdgeX(const glm::uvec3& coord, const float& d0, con
     }
 }
 
-void MeshGenerator::CalculateEdgeY(const glm::uvec3& coord, const float& d0, const glm::vec3& p0)
+void MeshGenerator::CalculateEdgeY(const glm::uvec3& coord, const float& d0, const glm::vec3& p0, const glm::vec3& n0)
 {
     if (coord.y >= _edgeMapY.Index.Size.y)
         return;
 
     float d1;
     glm::vec3 p1;
-    _cachedSDF->Get(glm::uvec3(coord.x, coord.y + 1, coord.z), d1, p1);
+    glm::vec3 n1;
+    _cachedSDF->Get(glm::uvec3(coord.x, coord.y + 1, coord.z), d1, p1, n1);
     if (NonZeroSign(d0) == NonZeroSign(d1))
         return;
 
     int index = _edgeMapY.Index.Encode(coord);
 
-    _edgeMapY.Intersection[index] = VertexInterp(0, p0, p1, d0, d1);
-    _edgeMapY.Direction[index] = NonZeroSign(d1);
+    _edgeMapY.Intersections[index] = Interpolate(0, p0, p1, d0, d1);
+    _edgeMapY.Normals[index] = Interpolate(0, n0, n1, d0, d1);
+    _edgeMapY.Directions[index] = NonZeroSign(d1);
 
     if (coord.x > 0 && coord.z > 0 && coord.x < _index.Size.x && coord.z < _index.Size.z)
     {
@@ -172,21 +178,23 @@ void MeshGenerator::CalculateEdgeY(const glm::uvec3& coord, const float& d0, con
     }
 }
 
-void MeshGenerator::CalculateEdgeZ(const glm::uvec3& coord, const float& d0, const glm::vec3& p0)
+void MeshGenerator::CalculateEdgeZ(const glm::uvec3& coord, const float& d0, const glm::vec3& p0, const glm::vec3& n0)
 {
     if (coord.z >= _edgeMapZ.Index.Size.z)
         return;
 
     float d1;
     glm::vec3 p1;
-    _cachedSDF->Get(glm::uvec3(coord.x, coord.y, coord.z + 1), d1, p1);
+    glm::vec3 n1;
+    _cachedSDF->Get(glm::uvec3(coord.x, coord.y, coord.z + 1), d1, p1, n1);
     if (NonZeroSign(d0) == NonZeroSign(d1))
         return;
 
     int index = _edgeMapZ.Index.Encode(coord);
 
-    _edgeMapZ.Intersection[index] = VertexInterp(0, p0, p1, d0, d1);
-    _edgeMapZ.Direction[index] = NonZeroSign(d1);
+    _edgeMapZ.Intersections[index] = Interpolate(0, p0, p1, d0, d1);
+    _edgeMapZ.Normals[index] = Interpolate(0, n0, n1, d0, d1);
+    _edgeMapZ.Directions[index] = NonZeroSign(d1);
 
     if (coord.x > 0 && coord.y > 0 && coord.x < _index.Size.x && coord.y < _index.Size.y)
     {
@@ -213,34 +221,94 @@ void MeshGenerator::CalculateVertex(int index)
     if (!_cubeCheck[index])
         return;
 
-    int cnt = 0;
-    glm::vec3 sum = glm::vec3(0.0f);
+    glm::vec3 center = glm::vec3(0.0f);
+    glm::vec3 points[12];
+    glm::vec3 normals[12];
+    size_t cnt = 0;
 
-    AggregateEdge(_edgeMapX, glm::uvec3(coord.x, coord.y, coord.z), sum, cnt);
-    AggregateEdge(_edgeMapX, glm::uvec3(coord.x, coord.y + 1, coord.z), sum, cnt);
-    AggregateEdge(_edgeMapX, glm::uvec3(coord.x, coord.y + 1, coord.z + 1), sum, cnt);
-    AggregateEdge(_edgeMapX, glm::uvec3(coord.x, coord.y, coord.z + 1), sum, cnt);
+    AggregateEdge(_edgeMapX, glm::uvec3(coord.x, coord.y, coord.z), center, points, normals, cnt);
+    AggregateEdge(_edgeMapX, glm::uvec3(coord.x, coord.y + 1, coord.z), center, points, normals, cnt);
+    AggregateEdge(_edgeMapX, glm::uvec3(coord.x, coord.y + 1, coord.z + 1), center, points, normals, cnt);
+    AggregateEdge(_edgeMapX, glm::uvec3(coord.x, coord.y, coord.z + 1), center, points, normals, cnt);
 
-    AggregateEdge(_edgeMapY, glm::uvec3(coord.x, coord.y, coord.z), sum, cnt);
-    AggregateEdge(_edgeMapY, glm::uvec3(coord.x + 1, coord.y, coord.z), sum, cnt);
-    AggregateEdge(_edgeMapY, glm::uvec3(coord.x + 1, coord.y, coord.z + 1), sum, cnt);
-    AggregateEdge(_edgeMapY, glm::uvec3(coord.x, coord.y, coord.z + 1), sum, cnt);
+    AggregateEdge(_edgeMapY, glm::uvec3(coord.x, coord.y, coord.z), center, points, normals, cnt);
+    AggregateEdge(_edgeMapY, glm::uvec3(coord.x + 1, coord.y, coord.z), center, points, normals, cnt);
+    AggregateEdge(_edgeMapY, glm::uvec3(coord.x + 1, coord.y, coord.z + 1), center, points, normals, cnt);
+    AggregateEdge(_edgeMapY, glm::uvec3(coord.x, coord.y, coord.z + 1), center, points, normals, cnt);
 
-    AggregateEdge(_edgeMapZ, glm::uvec3(coord.x, coord.y, coord.z), sum, cnt);
-    AggregateEdge(_edgeMapZ, glm::uvec3(coord.x + 1, coord.y, coord.z), sum, cnt);
-    AggregateEdge(_edgeMapZ, glm::uvec3(coord.x + 1, coord.y + 1, coord.z), sum, cnt);
-    AggregateEdge(_edgeMapZ, glm::uvec3(coord.x, coord.y + 1, coord.z), sum, cnt);
+    AggregateEdge(_edgeMapZ, glm::uvec3(coord.x, coord.y, coord.z), center, points, normals, cnt);
+    AggregateEdge(_edgeMapZ, glm::uvec3(coord.x + 1, coord.y, coord.z), center, points, normals, cnt);
+    AggregateEdge(_edgeMapZ, glm::uvec3(coord.x + 1, coord.y + 1, coord.z), center, points, normals, cnt);
+    AggregateEdge(_edgeMapZ, glm::uvec3(coord.x, coord.y + 1, coord.z), center, points, normals, cnt);
 
-    _cubeVertices[index] = sum / (float)cnt;
+    if (cnt == 0)
+        return;
+
+    center = center / (float)cnt;
+
+#ifdef SHARP_FEATURES
+    // particle?
+    const size_t MAX_ITERATIONS = 100;
+    const float THRESHOLD = 0.001f * 0.001f;
+    for (size_t i = 0; i < MAX_ITERATIONS; i++)
+    {
+        glm::vec3 force = glm::vec3();
+
+        for (size_t j = 0; j < cnt; j++)
+        {
+            auto point = points[j];
+            auto normal = normals[j];
+
+            // distance to plane
+            force += normal * -1.0f * (glm::dot(normal, center - point));
+        }
+
+        // dampen the force
+        float damping = 1.0f - (float)i / MAX_ITERATIONS;
+
+        center += force * damping / (float)cnt; // average over all the points
+
+        // if the force is negligible according to the threshold, we're done
+        if (glm::dot(force, force) < THRESHOLD)
+            break;
+    }
+
+    // clamp
+    float dMin;
+    glm::vec3 pMin;
+    glm::vec3 nMin;
+    _cachedSDF->Get(coord, dMin, pMin, nMin);
+
+    float dMax;
+    glm::vec3 pMax;
+    glm::vec3 nMax;
+    _cachedSDF->Get(coord + glm::uvec3(1), dMax, pMax, nMax);
+
+    center = glm::clamp(center, pMin, pMax);
+#endif
+
+    _cubeVertices[index] = center;
 }
 
-void MeshGenerator::AggregateEdge(const EdgeMap& edgeMap, const glm::uvec3& coord, glm::vec3& sum, int& cnt)
+void MeshGenerator::AggregateEdge(
+    const EdgeMap& edgeMap,
+    const glm::uvec3& coord,
+    glm::vec3& sum,
+    glm::vec3* intersections,
+    glm::vec3* normals,
+    size_t& cnt
+)
 {
     int index = edgeMap.Index.Encode(coord);
     if (edgeMap.IndexOffset[index] != EDGE_NO_SIGN_CHANGE)
     {
-        sum += edgeMap.Intersection[index];
-        cnt++;
+        auto intersection = edgeMap.Intersections[index];
+        auto normal = edgeMap.Normals[index];
+        sum += intersection;
+
+        auto i = cnt++;
+        intersections[i] = intersection;
+        normals[i] = normal;
     }
 }
 
@@ -268,4 +336,4 @@ MeshCpu MeshGenerator::GenerateMesh()
 
     return BuildMesh(_counter * 6);
 }
-}
+} // namespace DualContouring

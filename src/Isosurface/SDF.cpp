@@ -35,4 +35,32 @@ float Noise(glm::vec3 p)
     p = p * scale;
     return perlin.normalizedOctaveNoise3D(p.x, p.y, p.z, octave);
 }
+
+glm::vec3 Normal(SDF f, glm::vec3 p, glm::vec3 eps)
+{
+    auto delta_x = f(p + glm::vec3(eps.x, 0, 0)) - f(p - glm::vec3(eps.x, 0, 0));
+    auto delta_y = f(p + glm::vec3(0, eps.y, 0)) - f(p - glm::vec3(0, eps.y, 0));
+    auto delta_z = f(p + glm::vec3(0, 0, eps.z)) - f(p - glm::vec3(0, 0, eps.z));
+
+    return glm::normalize(glm::vec3(delta_x, delta_y, delta_z));
+}
+
+SDF Intersect(SDF a, SDF b)
+{
+    return [a, b](glm::vec3 p) {
+        return std::max(a(p), b(p));
+    };
+}
+SDF Union(SDF a, SDF b)
+{
+    return [a, b](glm::vec3 p) {
+        return std::min(a(p), b(p));
+    };
+}
+SDF Difference(SDF a, SDF b)
+{
+    return [a, b](glm::vec3 p) {
+        return std::max(a(p), -b(p));
+    };
+}
 } // namespace SDF

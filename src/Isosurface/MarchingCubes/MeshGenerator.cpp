@@ -109,40 +109,40 @@ std::optional<MeshData> MeshGenerator::Polygonize(float isolevel, int cube[8])
 
     if (edgeTable[cubeindex] & 1)
         vertlist[0] =
-            VertexInterp(isolevel, positions[0], positions[1], distances[0], distances[1]);
+            Interpolate(isolevel, positions[0], positions[1], distances[0], distances[1]);
     if (edgeTable[cubeindex] & 2)
         vertlist[1] =
-            VertexInterp(isolevel, positions[1], positions[2], distances[1], distances[2]);
+            Interpolate(isolevel, positions[1], positions[2], distances[1], distances[2]);
     if (edgeTable[cubeindex] & 4)
         vertlist[2] =
-            VertexInterp(isolevel, positions[2], positions[3], distances[2], distances[3]);
+            Interpolate(isolevel, positions[2], positions[3], distances[2], distances[3]);
     if (edgeTable[cubeindex] & 8)
         vertlist[3] =
-            VertexInterp(isolevel, positions[3], positions[0], distances[3], distances[0]);
+            Interpolate(isolevel, positions[3], positions[0], distances[3], distances[0]);
     if (edgeTable[cubeindex] & 16)
         vertlist[4] =
-            VertexInterp(isolevel, positions[4], positions[5], distances[4], distances[5]);
+            Interpolate(isolevel, positions[4], positions[5], distances[4], distances[5]);
     if (edgeTable[cubeindex] & 32)
         vertlist[5] =
-            VertexInterp(isolevel, positions[5], positions[6], distances[5], distances[6]);
+            Interpolate(isolevel, positions[5], positions[6], distances[5], distances[6]);
     if (edgeTable[cubeindex] & 64)
         vertlist[6] =
-            VertexInterp(isolevel, positions[6], positions[7], distances[6], distances[7]);
+            Interpolate(isolevel, positions[6], positions[7], distances[6], distances[7]);
     if (edgeTable[cubeindex] & 128)
         vertlist[7] =
-            VertexInterp(isolevel, positions[7], positions[4], distances[7], distances[4]);
+            Interpolate(isolevel, positions[7], positions[4], distances[7], distances[4]);
     if (edgeTable[cubeindex] & 256)
         vertlist[8] =
-            VertexInterp(isolevel, positions[0], positions[4], distances[0], distances[4]);
+            Interpolate(isolevel, positions[0], positions[4], distances[0], distances[4]);
     if (edgeTable[cubeindex] & 512)
         vertlist[9] =
-            VertexInterp(isolevel, positions[1], positions[5], distances[1], distances[5]);
+            Interpolate(isolevel, positions[1], positions[5], distances[1], distances[5]);
     if (edgeTable[cubeindex] & 1024)
         vertlist[10] =
-            VertexInterp(isolevel, positions[2], positions[6], distances[2], distances[6]);
+            Interpolate(isolevel, positions[2], positions[6], distances[2], distances[6]);
     if (edgeTable[cubeindex] & 2048)
         vertlist[11] =
-            VertexInterp(isolevel, positions[3], positions[7], distances[3], distances[7]);
+            Interpolate(isolevel, positions[3], positions[7], distances[3], distances[7]);
 
     MeshData meshData = {16};
 

@@ -3,7 +3,7 @@
 
 namespace
 {
-inline glm::vec3 VertexInterp(const float& isoLevel, const glm::vec3& p1, const glm::vec3& p2, const float& valp1, const float& valp2)
+inline glm::vec3 Interpolate(const float& isoLevel, const glm::vec3& p1, const glm::vec3& p2, const float& valp1, const float& valp2)
 {
     if (abs(valp2 - valp1) < 0.00001)
         return p1;

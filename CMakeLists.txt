@@ -35,7 +35,8 @@ file(GLOB_RECURSE sources
 add_executable(${PROJECT_NAME} ${sources})
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_11)
 target_compile_options(${PROJECT_NAME} PRIVATE -Wno-error -Wall -Wextra -Weffc++ -fopenmp)
-target_link_libraries(${PROJECT_NAME} glad glfw glm gomp OpenGL::GL)
+target_link_libraries(${PROJECT_NAME} PRIVATE glad glfw glm OpenGL::GL)
+target_link_options(${PROJECT_NAME} PRIVATE -fopenmp)
 
 add_custom_target(assets COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/assets ${OUTPUT_PATH}/assets BYPRODUCTS ${OUTPUT_PATH}/assets)
 add_dependencies(${PROJECT_NAME} assets)
