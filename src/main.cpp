@@ -60,12 +60,12 @@ const size_t ITERATIONS = 10;
 
 int main()
 {
-    // for (size_t i = 0; i < BenchmarkBuilders.size(); i++)
-    // {
-    //     ExecuteBenchmark(BenchmarkBuilders[i](), ITERATIONS);
-    // }
+    for (size_t i = 0; i < BenchmarkBuilders.size(); i++)
+    {
+        ExecuteBenchmark(BenchmarkBuilders[i](), ITERATIONS);
+    }
 
-    Demo(BenchmarkBuilders[3]());
+    // Demo(BenchmarkBuilders[0]());
 
     return 0;
 }

@@ -73,16 +73,6 @@ std::optional<MeshData> MeshGenerator::Polygonize(float isolevel, int cube[8])
         _cachedSDF->Distances[cube[6]],
         _cachedSDF->Distances[cube[7]],
     };
-    glm::vec3 positions[8] = {
-        _cachedSDF->Positions[cube[0]],
-        _cachedSDF->Positions[cube[1]],
-        _cachedSDF->Positions[cube[2]],
-        _cachedSDF->Positions[cube[3]],
-        _cachedSDF->Positions[cube[4]],
-        _cachedSDF->Positions[cube[5]],
-        _cachedSDF->Positions[cube[6]],
-        _cachedSDF->Positions[cube[7]],
-    };
 
     int cubeindex = 0;
     if (distances[0] < isolevel)
@@ -104,6 +94,17 @@ std::optional<MeshData> MeshGenerator::Polygonize(float isolevel, int cube[8])
 
     if (edgeTable[cubeindex] == 0x0)
         return std::nullopt;
+
+    glm::vec3 positions[8] = {
+        _cachedSDF->Positions[cube[0]],
+        _cachedSDF->Positions[cube[1]],
+        _cachedSDF->Positions[cube[2]],
+        _cachedSDF->Positions[cube[3]],
+        _cachedSDF->Positions[cube[4]],
+        _cachedSDF->Positions[cube[5]],
+        _cachedSDF->Positions[cube[6]],
+        _cachedSDF->Positions[cube[7]],
+    };
 
     glm::vec3 vertlist[12];
 
@@ -155,4 +156,4 @@ std::optional<MeshData> MeshGenerator::Polygonize(float isolevel, int cube[8])
 
     return std::optional(meshData);
 }
-} // namespace
+} // namespace MarchingCubes

@@ -6,7 +6,7 @@
 #include <iostream>
 #include <memory>
 
-using namespace DualContouring;
+using namespace MarchingCubes;
 
 void ExecuteBenchmark(Benchmark benchmark, size_t iterations)
 {

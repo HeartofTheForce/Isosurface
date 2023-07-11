@@ -10,7 +10,7 @@
 #include <chrono>
 #include <glm/glm.hpp>
 
-using namespace DualContouring;
+using namespace MarchingCubes;
 
 #define FULLSCREEN false
 
