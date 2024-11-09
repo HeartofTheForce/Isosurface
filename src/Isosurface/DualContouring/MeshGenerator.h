@@ -12,9 +12,7 @@ class MeshGenerator
 
     const IndexMap _index;
 
-    const EdgeMap _edgeMapX;
-    const EdgeMap _edgeMapY;
-    const EdgeMap _edgeMapZ;
+    const EdgeMap _edgeMaps[3];
 
     const std::unique_ptr<bool[]> _cubeCheck;
     const std::unique_ptr<glm::vec3[]> _cubeVertices;
@@ -33,9 +31,7 @@ class MeshGenerator
         const glm::uvec3& unique1
     );
     inline void CalculateEdge(int index);
-    inline void CalculateEdgeX(const glm::uvec3& coord, const float& d0, const glm::vec3& p0, const glm::vec3& n0);
-    inline void CalculateEdgeY(const glm::uvec3& coord, const float& d0, const glm::vec3& p0, const glm::vec3& n0);
-    inline void CalculateEdgeZ(const glm::uvec3& coord, const float& d0, const glm::vec3& p0, const glm::vec3& n0);
+    inline void CalculateEdge(const int iA, const glm::uvec3& coord, const float& d0, const glm::vec3& p0, const glm::vec3& n0);
     inline void CalculateVertex(int index);
     inline void AggregateEdge(
         const EdgeMap& edgeMap,
@@ -52,12 +48,13 @@ class MeshGenerator
     MeshGenerator(std::shared_ptr<CachedSDF> cachedSDF)
         : _cachedSDF(cachedSDF),
           _index(_cachedSDF->Index.Size - glm::uvec3(1)),
-          _edgeMapX(EdgeMap{
-              glm::uvec3(_index.Size.x, _cachedSDF->Index.Size.y, _cachedSDF->Index.Size.z)}),
-          _edgeMapY(EdgeMap{
-              glm::uvec3(_cachedSDF->Index.Size.x, _index.Size.y, _cachedSDF->Index.Size.z)}),
-          _edgeMapZ(EdgeMap{
-              glm::uvec3(_cachedSDF->Index.Size.x, _cachedSDF->Index.Size.y, _index.Size.z)}),
+          // clang-format off
+          _edgeMaps {
+            EdgeMap{glm::uvec3(_index.Size.x, _cachedSDF->Index.Size.y, _cachedSDF->Index.Size.z)},
+            EdgeMap{glm::uvec3(_cachedSDF->Index.Size.x, _index.Size.y, _cachedSDF->Index.Size.z)},
+            EdgeMap{glm::uvec3(_cachedSDF->Index.Size.x, _cachedSDF->Index.Size.y, _index.Size.z)}
+          },
+          // clang-format on
           _cubeCheck(std::unique_ptr<bool[]>(new bool[_index.TotalSize])),
           _cubeVertices(std::unique_ptr<glm::vec3[]>(new glm::vec3[_index.TotalSize]))
     {

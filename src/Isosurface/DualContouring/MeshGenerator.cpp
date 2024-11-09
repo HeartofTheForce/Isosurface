@@ -52,43 +52,30 @@ void MeshGenerator::PopulateMesh(const int& index, MeshCpu& meshCpu)
 {
     glm::uvec3 coord = _index.Decode(index);
 
-    int iX = _edgeMapX.Index.Encode(coord);
-    int oX = _edgeMapX.IndexOffset[iX];
-    if (oX >= 0)
+    for (int iA = 0; iA < 3; iA++)
     {
-        auto shared0 = coord;
-        auto shared1 = glm::uvec3(coord.x, coord.y - 1, coord.z - 1);
+        int iB = (iA + 1) % 3;
+        int iC = (iA + 2) % 3;
 
-        auto unique0 = glm::uvec3(coord.x, coord.y - 1, coord.z);
-        auto unique1 = glm::uvec3(coord.x, coord.y, coord.z - 1);
+        auto edgeMap = &_edgeMaps[iA];
+        int edgeIndex = edgeMap->Index.Encode(coord);
+        int offset = edgeMap->IndexOffset[edgeIndex];
+        if (offset >= 0)
+        {
+            auto shared0 = coord;
+            auto shared1 = coord;
 
-        PushEdge(meshCpu, oX, _edgeMapX.Directions[iX], shared0, shared1, unique0, unique1);
-    }
+            shared1[iB] -= 1;
+            shared1[iC] -= 1;
 
-    int iY = _edgeMapY.Index.Encode(coord);
-    int oY = _edgeMapY.IndexOffset[iY];
-    if (oY >= 0)
-    {
-        auto shared0 = coord;
-        auto shared1 = glm::uvec3(coord.x - 1, coord.y, coord.z - 1);
+            auto unique0 = coord;
+            auto unique1 = coord;
 
-        auto unique0 = glm::uvec3(coord.x, coord.y, coord.z - 1);
-        auto unique1 = glm::uvec3(coord.x - 1, coord.y, coord.z);
+            unique0[iB] -= 1;
+            unique1[iC] -= 1;
 
-        PushEdge(meshCpu, oY, _edgeMapY.Directions[iY], shared0, shared1, unique0, unique1);
-    }
-
-    int iZ = _edgeMapZ.Index.Encode(coord);
-    int oZ = _edgeMapZ.IndexOffset[iZ];
-    if (oZ >= 0)
-    {
-        auto shared0 = coord;
-        auto shared1 = glm::uvec3(coord.x - 1, coord.y - 1, coord.z);
-
-        auto unique0 = glm::uvec3(coord.x - 1, coord.y, coord.z);
-        auto unique1 = glm::uvec3(coord.x, coord.y - 1, coord.z);
-
-        PushEdge(meshCpu, oZ, _edgeMapZ.Directions[iZ], shared0, shared1, unique0, unique1);
+            PushEdge(meshCpu, offset, edgeMap->Directions[edgeIndex], shared0, shared1, unique0, unique1);
+        }
     }
 }
 
@@ -99,119 +86,59 @@ void MeshGenerator::CalculateEdge(int index)
     glm::vec3 n0 = _cachedSDF->Normals[index];
     glm::uvec3 coord = _cachedSDF->Index.Decode(index);
 
-    CalculateEdgeX(coord, d0, p0, n0);
-    CalculateEdgeY(coord, d0, p0, n0);
-    CalculateEdgeZ(coord, d0, p0, n0);
+    CalculateEdge(0, coord, d0, p0, n0);
+    CalculateEdge(1, coord, d0, p0, n0);
+    CalculateEdge(2, coord, d0, p0, n0);
 }
 
-void MeshGenerator::CalculateEdgeX(const glm::uvec3& coord, const float& d0, const glm::vec3& p0, const glm::vec3& n0)
+void MeshGenerator::CalculateEdge(const int iA, const glm::uvec3& coord, const float& d0, const glm::vec3& p0, const glm::vec3& n0)
 {
-    if (coord.x >= _edgeMapX.Index.Size.x)
+    auto edgeMap = &_edgeMaps[iA];
+    if (coord[iA] >= edgeMap->Index.Size[iA])
         return;
 
     float d1;
     glm::vec3 p1;
     glm::vec3 n1;
-    _cachedSDF->Get(glm::uvec3(coord.x + 1, coord.y, coord.z), d1, p1, n1);
+
+    glm::uvec3 nextCoord = coord;
+    nextCoord[iA] += 1;
+    _cachedSDF->Get(nextCoord, d1, p1, n1);
     if (NonZeroSign(d0) == NonZeroSign(d1))
         return;
 
-    int index = _edgeMapX.Index.Encode(coord);
+    int index = edgeMap->Index.Encode(coord);
 
-    _edgeMapX.Intersections[index] = Interpolate(0, p0, p1, d0, d1);
-    _edgeMapX.Normals[index] = Interpolate(0, n0, n1, d0, d1);
-    _edgeMapX.Directions[index] = NonZeroSign(d1);
+    edgeMap->Intersections[index] = Interpolate(0, p0, p1, d0, d1);
+    edgeMap->Normals[index] = Interpolate(0, n0, n1, d0, d1);
+    edgeMap->Directions[index] = NonZeroSign(d1);
 
-    if (coord.y > 0 && coord.z > 0 && coord.y < _index.Size.y && coord.z < _index.Size.z)
+    int iB = (iA + 1) % 3;
+    int iC = (iA + 2) % 3;
+
+    if (coord[iB] > 0 && coord[iC] > 0 && coord[iB] < _index.Size[iB] && coord[iC] < _index.Size[iC])
     {
         int indexOffset;
 #pragma omp atomic capture
         indexOffset = _counter++;
 
-        _edgeMapX.IndexOffset[index] = indexOffset * 6;
+        edgeMap->IndexOffset[index] = indexOffset * 6;
 
-        _cubeCheck[_index.Encode(glm::uvec3(coord.x, coord.y, coord.z))] = true;
-        _cubeCheck[_index.Encode(glm::uvec3(coord.x, coord.y - 1, coord.z))] = true;
-        _cubeCheck[_index.Encode(glm::uvec3(coord.x, coord.y - 1, coord.z - 1))] = true;
-        _cubeCheck[_index.Encode(glm::uvec3(coord.x, coord.y, coord.z - 1))] = true;
+        glm::uvec3 coords[] = {coord, coord, coord, coord};
+
+        coords[1][iB] -= 1;
+        coords[2][iB] -= 1;
+        coords[2][iC] -= 1;
+        coords[3][iC] -= 1;
+
+        for (int i = 0; i < 4; i++)
+        {
+            _cubeCheck[_index.Encode(coords[i])] = true;
+        }
     }
     else
     {
-        _edgeMapX.IndexOffset[index] = EDGE_BORDER;
-    }
-}
-
-void MeshGenerator::CalculateEdgeY(const glm::uvec3& coord, const float& d0, const glm::vec3& p0, const glm::vec3& n0)
-{
-    if (coord.y >= _edgeMapY.Index.Size.y)
-        return;
-
-    float d1;
-    glm::vec3 p1;
-    glm::vec3 n1;
-    _cachedSDF->Get(glm::uvec3(coord.x, coord.y + 1, coord.z), d1, p1, n1);
-    if (NonZeroSign(d0) == NonZeroSign(d1))
-        return;
-
-    int index = _edgeMapY.Index.Encode(coord);
-
-    _edgeMapY.Intersections[index] = Interpolate(0, p0, p1, d0, d1);
-    _edgeMapY.Normals[index] = Interpolate(0, n0, n1, d0, d1);
-    _edgeMapY.Directions[index] = NonZeroSign(d1);
-
-    if (coord.x > 0 && coord.z > 0 && coord.x < _index.Size.x && coord.z < _index.Size.z)
-    {
-        int indexOffset;
-#pragma omp atomic capture
-        indexOffset = _counter++;
-
-        _edgeMapY.IndexOffset[index] = indexOffset * 6;
-
-        _cubeCheck[_index.Encode(glm::uvec3(coord.x, coord.y, coord.z))] = true;
-        _cubeCheck[_index.Encode(glm::uvec3(coord.x - 1, coord.y, coord.z))] = true;
-        _cubeCheck[_index.Encode(glm::uvec3(coord.x - 1, coord.y, coord.z - 1))] = true;
-        _cubeCheck[_index.Encode(glm::uvec3(coord.x, coord.y, coord.z - 1))] = true;
-    }
-    else
-    {
-        _edgeMapY.IndexOffset[index] = EDGE_BORDER;
-    }
-}
-
-void MeshGenerator::CalculateEdgeZ(const glm::uvec3& coord, const float& d0, const glm::vec3& p0, const glm::vec3& n0)
-{
-    if (coord.z >= _edgeMapZ.Index.Size.z)
-        return;
-
-    float d1;
-    glm::vec3 p1;
-    glm::vec3 n1;
-    _cachedSDF->Get(glm::uvec3(coord.x, coord.y, coord.z + 1), d1, p1, n1);
-    if (NonZeroSign(d0) == NonZeroSign(d1))
-        return;
-
-    int index = _edgeMapZ.Index.Encode(coord);
-
-    _edgeMapZ.Intersections[index] = Interpolate(0, p0, p1, d0, d1);
-    _edgeMapZ.Normals[index] = Interpolate(0, n0, n1, d0, d1);
-    _edgeMapZ.Directions[index] = NonZeroSign(d1);
-
-    if (coord.x > 0 && coord.y > 0 && coord.x < _index.Size.x && coord.y < _index.Size.y)
-    {
-        int indexOffset;
-#pragma omp atomic capture
-        indexOffset = _counter++;
-
-        _edgeMapZ.IndexOffset[index] = indexOffset * 6;
-
-        _cubeCheck[_index.Encode(glm::uvec3(coord.x, coord.y, coord.z))] = true;
-        _cubeCheck[_index.Encode(glm::uvec3(coord.x - 1, coord.y, coord.z))] = true;
-        _cubeCheck[_index.Encode(glm::uvec3(coord.x - 1, coord.y - 1, coord.z))] = true;
-        _cubeCheck[_index.Encode(glm::uvec3(coord.x, coord.y - 1, coord.z))] = true;
-    }
-    else
-    {
-        _edgeMapZ.IndexOffset[index] = EDGE_BORDER;
+        edgeMap->IndexOffset[index] = EDGE_BORDER;
     }
 }
 
@@ -226,20 +153,22 @@ void MeshGenerator::CalculateVertex(int index)
     glm::vec3 normals[12];
     size_t cnt = 0;
 
-    AggregateEdge(_edgeMapX, glm::uvec3(coord.x, coord.y, coord.z), center, points, normals, cnt);
-    AggregateEdge(_edgeMapX, glm::uvec3(coord.x, coord.y + 1, coord.z), center, points, normals, cnt);
-    AggregateEdge(_edgeMapX, glm::uvec3(coord.x, coord.y + 1, coord.z + 1), center, points, normals, cnt);
-    AggregateEdge(_edgeMapX, glm::uvec3(coord.x, coord.y, coord.z + 1), center, points, normals, cnt);
+    for (int iA = 0; iA < 3; iA++)
+    {
+        int iB = (iA + 1) % 3;
+        int iC = (iA + 2) % 3;
 
-    AggregateEdge(_edgeMapY, glm::uvec3(coord.x, coord.y, coord.z), center, points, normals, cnt);
-    AggregateEdge(_edgeMapY, glm::uvec3(coord.x + 1, coord.y, coord.z), center, points, normals, cnt);
-    AggregateEdge(_edgeMapY, glm::uvec3(coord.x + 1, coord.y, coord.z + 1), center, points, normals, cnt);
-    AggregateEdge(_edgeMapY, glm::uvec3(coord.x, coord.y, coord.z + 1), center, points, normals, cnt);
+        glm::uvec3 coords[] = {coord, coord, coord, coord};
+        coords[1][iB] += 1;
+        coords[2][iB] += 1;
+        coords[2][iC] += 1;
+        coords[3][iC] += 1;
 
-    AggregateEdge(_edgeMapZ, glm::uvec3(coord.x, coord.y, coord.z), center, points, normals, cnt);
-    AggregateEdge(_edgeMapZ, glm::uvec3(coord.x + 1, coord.y, coord.z), center, points, normals, cnt);
-    AggregateEdge(_edgeMapZ, glm::uvec3(coord.x + 1, coord.y + 1, coord.z), center, points, normals, cnt);
-    AggregateEdge(_edgeMapZ, glm::uvec3(coord.x, coord.y + 1, coord.z), center, points, normals, cnt);
+        for (int i = 0; i < 4; i++)
+        {
+            AggregateEdge(_edgeMaps[iA], coords[i], center, points, normals, cnt);
+        }
+    }
 
     if (cnt == 0)
         return;
@@ -315,9 +244,9 @@ void MeshGenerator::AggregateEdge(
 MeshCpu MeshGenerator::GenerateMesh()
 {
     std::fill(_cubeCheck.get(), _cubeCheck.get() + _index.TotalSize, false);
-    std::fill(_edgeMapX.IndexOffset.get(), _edgeMapX.IndexOffset.get() + _edgeMapX.Index.TotalSize, EDGE_NO_SIGN_CHANGE);
-    std::fill(_edgeMapY.IndexOffset.get(), _edgeMapY.IndexOffset.get() + _edgeMapY.Index.TotalSize, EDGE_NO_SIGN_CHANGE);
-    std::fill(_edgeMapZ.IndexOffset.get(), _edgeMapZ.IndexOffset.get() + _edgeMapZ.Index.TotalSize, EDGE_NO_SIGN_CHANGE);
+    std::fill(_edgeMaps[0].IndexOffset.get(), _edgeMaps[0].IndexOffset.get() + _edgeMaps[0].Index.TotalSize, EDGE_NO_SIGN_CHANGE);
+    std::fill(_edgeMaps[1].IndexOffset.get(), _edgeMaps[1].IndexOffset.get() + _edgeMaps[1].Index.TotalSize, EDGE_NO_SIGN_CHANGE);
+    std::fill(_edgeMaps[2].IndexOffset.get(), _edgeMaps[2].IndexOffset.get() + _edgeMaps[2].Index.TotalSize, EDGE_NO_SIGN_CHANGE);
 
     _counter = 0;
 #pragma omp parallel

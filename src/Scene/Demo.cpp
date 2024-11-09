@@ -10,7 +10,7 @@
 #include <chrono>
 #include <glm/glm.hpp>
 
-using namespace MarchingCubes;
+using namespace DualContouring;
 
 #define FULLSCREEN false
 
@@ -46,7 +46,7 @@ void Demo(Benchmark benchmark)
     {
         glm::vec3 moveDirection = inputHandler.GetMoveDirection();
         glm::vec2 mouseDelta = inputHandler.GetMouseDelta();
-        camera.Update(5.0f * inputHandler.DeltaTime, moveDirection, 0.75f, mouseDelta);
+        camera.Update(5.0f * inputHandler.DeltaTime, moveDirection, 2.0f, mouseDelta);
 
         MeshCpu generatedCpu = meshGenerator.GenerateMesh();
         MeshGpu generatedGpu = generatedCpu.LoadGpu(standardProgram);
